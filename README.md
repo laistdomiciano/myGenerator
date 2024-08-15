@@ -92,10 +92,10 @@ Project Directories Strucure:
 
 /employment_contract_generator
 ├── backend/
-│   ├── app/
-│   │   ├── __init__.py      
+│   ├── app/     
 │   │   ├── auth.py             
-│   │   ├── config.py        
+│   │   ├── config.py  
+│   │   ├── init.py     
 │   │   ├── models.py           
 │   │   ├── routes.py           
 │   │   ├── services.py         
