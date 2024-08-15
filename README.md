@@ -97,8 +97,7 @@ Project Directories Strucure:
 │   │   ├── config.py  
 │   │   ├── init.py     
 │   │   ├── models.py           
-│   │   ├── routes.py           
-│   │   ├── services.py         
+│   │   ├── routes.py                 
 │   │   ├── utils.py            
 │   ├── migrations/             
 │   ├── tests/                  
