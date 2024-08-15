@@ -107,12 +107,18 @@ Project Directories Strucure:
 │   ├── .pylintrc               
 │   └── wsgi.py                 
 ├── frontend/
-│   ├── index.html              
-│   ├── styles.css              
-│   ├── script.js               
+│   ├── static
+│   │   ├── home.png          
+│   │   ├── script.js 
+│   │   ├── styles.css                      
 │   ├── templates/  
-│   │   ├── home.html           
-│   │   ├── fulltime.html
+│   │   ├── dashboard.html    
+│   │   ├── freelance.html       
+│   │   ├── full-time.html
 │   │   ├── parttime.html
 │   │   ├── freelance.html
+│   │   ├── home.html           
+
+│   │   ├── part-time.html
+│   │   ├── signup.html
 └── README.md  
