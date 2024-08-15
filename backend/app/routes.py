@@ -1,19 +1,16 @@
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session
-from . import db
-from models import User, Employee, ContractType, FinalContract
-from utils import generate_pdf
-from auth import create_access_token
+from .utils import generate_pdf
+from .auth import create_jwt_token
 from werkzeug.security import generate_password_hash, check_password_hash
+from .models import User, Employee, ContractType, FinalContract, db
 
-routes_bp = Blueprint('routes', __name__)
+routes = Blueprint('routes', __name__)
 
-
-@routes_bp.route('/')
+@routes.route('/')
 def home():
     return render_template('home.html')
 
-
-@routes_bp.route('/signup', methods=['GET', 'POST'])
+@routes.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         data = request.form
@@ -40,8 +37,7 @@ def signup():
 
     return render_template('signup.html')
 
-
-@routes_bp.route('/login', methods=['GET', 'POST'])
+@routes.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         data = request.form
@@ -50,40 +46,35 @@ def login():
 
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
-            access_token = create_access_token(identity=user.id)
+            access_token = create_jwt_token(user.id)
             session['access_token'] = access_token
             return redirect(url_for('routes.dashboard'))
         return render_template('login.html', error="Invalid credentials.")
 
     return render_template('login.html')
 
-
-@routes_bp.route('/logout')
+@routes.route('/logout')
 def logout():
     session.pop('access_token', None)
     return redirect(url_for('routes.login'))
 
-
-@routes_bp.route('/dashboard')
+@routes.route('/dashboard')
 def dashboard():
     # This should be protected; add authentication check
     return render_template('dashboard.html')
 
-
-@routes_bp.route('/contract_form', methods=['GET'])
+@routes.route('/contract_form', methods=['GET'])
 def contract_form():
     contract_type = request.args.get('type')
     if not contract_type:
         return jsonify({'error': 'Contract type is required.'}), 400
 
-    # Serve the appropriate contract form based on type
     if contract_type in ['fulltime', 'parttime', 'freelance']:
         return render_template(f'{contract_type}_form.html', contract_type=contract_type)
     else:
         return jsonify({'error': 'Invalid contract type.'}), 400
 
-
-@routes_bp.route('/create_contract', methods=['POST'])
+@routes.route('/create_contract', methods=['POST'])
 def create_contract():
     user_id = session.get('user_id')
     if not user_id:
