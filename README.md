@@ -102,23 +102,23 @@ Project Directories Strucure:
 │   │   ├── utils.py            
 │   ├── migrations/             
 │   ├── tests/                  
-│   ├── .env                    
-│   ├── requirements.txt        
-│   ├── .pylintrc               
+│   ├── .env                           
+│   ├── .pylintrc     
+│   ├── requirements.txt           
 │   └── wsgi.py                 
 ├── frontend/
 │   ├── static
 │   │   ├── home.png          
 │   │   ├── script.js 
 │   │   ├── styles.css                      
-│   ├── templates/  
+│   ├── public/  
 │   │   ├── dashboard.html    
 │   │   ├── freelance.html       
 │   │   ├── full-time.html
-│   │   ├── parttime.html
-│   │   ├── freelance.html
-│   │   ├── home.html           
-
+│   │   ├── home.html     
+│   │   ├── login.html
 │   │   ├── part-time.html
 │   │   ├── signup.html
+├── venv/
+├── .gitignore
 └── README.md  
