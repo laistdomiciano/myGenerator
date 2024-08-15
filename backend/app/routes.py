@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session
-from app import db
-from app.models import User, Employee, ContractType, FinalContract
-from app.utils import generate_pdf
-from app.auth import create_access_token
+from . import db
+from models import User, Employee, ContractType, FinalContract
+from utils import generate_pdf
+from auth import create_access_token
 from werkzeug.security import generate_password_hash, check_password_hash
 
 routes_bp = Blueprint('routes', __name__)
