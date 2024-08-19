@@ -90,12 +90,11 @@ Specifies files and directories that should be ignored by Git (e.g., venv/, .env
 
 Project Directories Strucure:
 
-/employment_contract_generator
+/myGenerator
 ├── backend/
-│   ├── app/     
-│   │   ├── auth.py             
-│   │   ├── config.py  
-│   │   ├── init.py     
+│   ├── app/       
+│   │   ├── auth.py  
+│   │   ├── init.py             
 │   │   ├── models.py           
 │   │   ├── routes.py                 
 │   │   ├── utils.py            
