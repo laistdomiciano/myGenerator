@@ -1,0 +1,20 @@
+{% extends "home.html" %}
+
+{% block content %}
+<div class="form-container login-container">
+    <h2>Login</h2>
+    <form action="/login" method="post">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+    {% if error %}
+    <p id="login-message" class="error-message">{{ error }}</p>
+    {% endif %}
+</div>
+{% endblock %}
