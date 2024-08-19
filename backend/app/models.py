@@ -32,7 +32,6 @@ class FinalContract(db.Model):
     contract_type_id = db.Column(db.Integer, db.ForeignKey('contract_type.id'), nullable=False)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
     user = db.relationship('User', backref=db.backref('final_contracts', lazy=True))
     employee = db.relationship('Employee', backref=db.backref('final_contracts', lazy=True))
     contract_type = db.relationship('ContractType', backref=db.backref('final_contracts', lazy=True))
