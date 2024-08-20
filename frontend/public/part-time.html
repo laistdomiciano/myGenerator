@@ -1,8 +1,7 @@
 {% extends "home.html" %}
 
 {% block content %}
-
-<h1>Full-Time Employment Contract Input Form</h1>
+<h1>Part-Time Employment Contract Input Form</h1>
 <form id="contractForm">
     <label for="startDate">Start Date:</label>
     <input type="date" id="startDate" name="startDate" required>
@@ -19,16 +18,16 @@
     <label for="jobResponsibilities">Job Responsibilities:</label>
     <textarea id="jobResponsibilities" name="jobResponsibilities" rows="4" required></textarea>
 
-    <label for="salaryAmount">Salary Amount:</label>
-    <input type="number" id="salaryAmount" name="salaryAmount" step="0.01" required>
+    <label for="hourlyRate">Hourly Rate:</label>
+    <input type="number" id="hourlyRate" name="hourlyRate" step="0.01" required>
+
+    <label for="numberOfHours">Number of Hours per Week:</label>
+    <input type="number" id="numberOfHours" name="numberOfHours" required>
 
     <label for="benefits">List of Benefits:</label>
     <textarea id="benefits" name="benefits" rows="4" required></textarea>
 
-    <label for="workHours">Work Hours per Week:</label>
-    <input type="number" id="workHours" name="workHours" required>
-
-    <label for="leaveDays">Paid Leave Days per Year:</label>
+    <label for="leaveDays">Paid Leave Days per Year (Pro-Rated):</label>
     <input type="number" id="leaveDays" name="leaveDays" required>
 
     <label for="noticePeriod">Notice Period:</label>
@@ -41,3 +40,4 @@
 </form>
 
 {% endblock %}
+
