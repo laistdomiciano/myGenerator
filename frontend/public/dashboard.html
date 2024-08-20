@@ -1,0 +1,13 @@
+{% extends "home.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h2>Dashboard</h2>
+    <p>Select a contract type to generate:</p>
+    <ul>
+        <li><a href="/create_contract?type=fulltime" class="contract-link">Full-Time Employment</a></li>
+        <li><a href="/create_contract?type=parttime" class="contract-link">Part-Time Employment</a></li>
+        <li><a href="/create_contract?type=freelance" class="contract-link">Freelance Contract</a></li>
+    </ul>
+</div>
+{% endblock %}
