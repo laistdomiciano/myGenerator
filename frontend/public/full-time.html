@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Time Employment Contract Input</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Full-Time Employment Contract Input Form</h1>
+<form id="contractForm">
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate" name="startDate" required>
+
+    <label for="companyName">Company Name:</label>
+    <input type="text" id="companyName" name="companyName" required>
+
+    <label for="employeeName">Employee Name:</label>
+    <input type="text" id="employeeName" name="employeeName" required>
+
+    <label for="jobTitle">Job Title:</label>
+    <input type="text" id="jobTitle" name="jobTitle" required>
+
+    <label for="jobResponsibilities">Job Responsibilities:</label>
+    <textarea id="jobResponsibilities" name="jobResponsibilities" rows="4" required></textarea>
+
+    <label for="salaryAmount">Salary Amount:</label>
+    <input type="number" id="salaryAmount" name="salaryAmount" step="0.01" required>
+
+    <label for="benefits">List of Benefits:</label>
+    <textarea id="benefits" name="benefits" rows="4" required></textarea>
+
+    <label for="workHours">Work Hours per Week:</label>
+    <input type="number" id="workHours" name="workHours" required>
+
+    <label for="leaveDays">Paid Leave Days per Year:</label>
+    <input type="number" id="leaveDays" name="leaveDays" required>
+
+    <label for="noticePeriod">Notice Period:</label>
+    <input type="text" id="noticePeriod" name="noticePeriod" required>
+
+    <label for="companyRepresentative">Company Representative:</label>
+    <input type="text" id="companyRepresentative" name="companyRepresentative" required>
+
+    <button type="submit">Submit</button>
+</form>
+
+<script>
+    document.getElementById('contractForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
+        console.log(data);
+
+        // Here you can send the data to a server or process it further
+    });
+</script>
+
+</body>
+</html>
