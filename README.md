@@ -103,12 +103,8 @@ Project Directories Strucure:
 │   ├── .env                           
 │   ├── .pylintrc     
 │   ├── requirements.txt           
-│   └── wsgi.py                 
-├── frontend/
-│   ├── static
-│   │   ├── home.png          
-│   │   ├── script.js 
-│   │   ├── styles.css                      
+│   └── seed.py                 
+├── frontend/                    
 │   ├── public/  
 │   │   ├── dashboard.html    
 │   │   ├── freelance.html       
@@ -117,6 +113,10 @@ Project Directories Strucure:
 │   │   ├── login.html
 │   │   ├── part-time.html
 │   │   ├── signup.html
+│   ├── static/
+│   │   ├── home.png          
+│   │   ├── script.js 
+│   │   ├── styles.css  
 ├── venv/
 ├── .gitignore
 └── README.md  
