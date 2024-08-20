@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freelance Contract Input</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Freelance Contract Input Form</h1>
+<form id="contractForm">
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate" name="startDate" required>
+
+    <label for="companyName">Company Name:</label>
+    <input type="text" id="companyName" name="companyName" required>
+
+    <label for="freelancerName">Freelancer Name:</label>
+    <input type="text" id="freelancerName" name="freelancerName" required>
+
+    <label for="descriptionOfServices">Description of Services:</label>
+    <textarea id="descriptionOfServices" name="descriptionOfServices" rows="4" required></textarea>
+
+    <label for="feeAmount">Fee Amount:</label>
+    <input type="number" id="feeAmount" name="feeAmount" step="0.01" required>
+
+    <label for="paymentSchedule">Payment Schedule:</label>
+    <textarea id="paymentSchedule" name="paymentSchedule" rows="4" required></textarea>
+
+    <label for="ownershipTerms">Ownership Terms:</label>
+    <textarea id="ownershipTerms" name="ownershipTerms" rows="4" required></textarea>
+
+    <label for="noticePeriod">Notice Period:</label>
+    <input type="text" id="noticePeriod" name="noticePeriod" required>
+
+    <label for="clientRepresentative">Client Representative:</label>
+    <input type="text" id="clientRepresentative" name="clientRepresentative" required>
+
+    <button type="submit">Submit</button>
+</form>
+
+<script>
+    document.getElementById('contractForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
+        console.log(data);
+
+        // Here you can send the data to a server or process it further
+    });
+</script>
+
+</body>
+</html>
