@@ -4,31 +4,37 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from routes import routes
-from models import db, User, Employee, ContractType, FinalContract  # Import all models
+from models import db
 
-DB_NAME = 'mygenerator86759093875'
+
+DB_NAME = 'mygenerator5454'
 migrate = Migrate()
 jwt = JWTManager()
 
 def create_database():
-    conn = psycopg2.connect(
-        host='localhost',
-        port=5432,
-        user=os.environ.get('DB_USER', 'lais.domiciano@hotmail.com'),
-        password=os.environ.get('DB_PASSWORD', '2206')
-    )
-    conn.autocommit = True
-    cur = conn.cursor()
+    try:
+        conn = psycopg2.connect(
+            host='localhost',
+            port=5454,
+            user=os.environ.get('DB_USER', 'postgres'),  # Use a simple username
+            password=os.environ.get('DB_PASSWORD', '2206')
+        )
+        conn.autocommit = True
+        cur = conn.cursor()
 
-    cur.execute(f"SELECT 1 FROM pg_database WHERE datname = '{DB_NAME}'")
-    exists = cur.fetchone()
+        cur.execute(f"SELECT 1 FROM pg_database WHERE datname = '{DB_NAME}'")
+        exists = cur.fetchone()
 
-    if not exists:
-        cur.execute(f'CREATE DATABASE {DB_NAME}')
-        print('Database created successfully!')
+        if not exists:
+            cur.execute(f'CREATE DATABASE {DB_NAME}')
+            print('Database created successfully!')
 
-    cur.close()
-    conn.close()
+        cur.close()
+        conn.close()
+    except psycopg2.Error as e:
+        print(f"Error creating the database: {e}")
+        raise
+
 
 def create_app():
     create_database()  # Create the database if it doesn't exist
@@ -38,7 +44,7 @@ def create_app():
     myapp.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mysupersecretkey')
     myapp.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
         'DATABASE_URL',
-        f'postgresql://lais.domiciano@hotmail.com:2206@localhost:5432/{DB_NAME}'
+        f'postgresql://postgres:2206@localhost:5432/{DB_NAME}'  # Use the simple username here
     )
     myapp.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -49,13 +55,9 @@ def create_app():
     myapp.register_blueprint(routes, url_prefix='/')
 
     with myapp.app_context():
-        db.create_all()  # Create all tables in the database
+        db.create_all()
         print('All tables created successfully!')
 
     return myapp
 
-
 myapp = create_app()
-
-
-

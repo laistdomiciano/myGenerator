@@ -114,9 +114,9 @@ Project Directories Strucure:
 │   │   ├── part-time.html
 │   │   ├── signup.html
 │   ├── static/
-│   │   ├── home.png          
-│   │   ├── script.js 
-│   │   ├── styles.css  
+│       ├── home.png          
+│       ├── script.js 
+│       └── styles.css  
 ├── venv/
 ├── .gitignore
 └── README.md  
