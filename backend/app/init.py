@@ -7,7 +7,7 @@ from routes import routes
 from models import db
 
 
-DB_NAME = 'mygenerator5454'
+DB_NAME = 'test210801'
 migrate = Migrate()
 jwt = JWTManager()
 
@@ -15,7 +15,7 @@ def create_database():
     try:
         conn = psycopg2.connect(
             host='localhost',
-            port=5454,
+            port=5432,
             user=os.environ.get('DB_USER', 'postgres'),  # Use a simple username
             password=os.environ.get('DB_PASSWORD', '2206')
         )
