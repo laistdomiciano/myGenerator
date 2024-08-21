@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session
-from utils import generate_pdf
-from auth import create_jwt_token
+from .utils import generate_pdf
+from .auth import create_jwt_token
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import User, Employee, ContractType, FinalContract, db
+from .models import User, Employee, ContractType, FinalContract, db
 
 routes = Blueprint('routes', __name__)
 

@@ -1,13 +1,16 @@
+import sys
+sys.path.append('/Desktop/NewPycharm/myGenerator/backend/app/routes')
+
 import os
 import psycopg2
 from flask import Flask
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-from routes import routes
-from models import db
+from .routes import routes  # Use relative import
+from .models import db
 
 
-DB_NAME = 'test210801'
+DB_NAME = 'mygeneratordb'
 migrate = Migrate()
 jwt = JWTManager()
 
@@ -16,7 +19,7 @@ def create_database():
         conn = psycopg2.connect(
             host='localhost',
             port=5432,
-            user=os.environ.get('DB_USER', 'postgres'),  # Use a simple username
+            user=os.environ.get('DB_USER', 'postgres'),
             password=os.environ.get('DB_PASSWORD', '2206')
         )
         conn.autocommit = True
@@ -37,14 +40,14 @@ def create_database():
 
 
 def create_app():
-    create_database()  # Create the database if it doesn't exist
+    create_database()
 
     myapp = Flask(__name__)
 
     myapp.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mysupersecretkey')
     myapp.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
         'DATABASE_URL',
-        f'postgresql://postgres:2206@localhost:5432/{DB_NAME}'  # Use the simple username here
+        f'postgresql://postgres:2206@localhost:5432/{DB_NAME}'
     )
     myapp.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
