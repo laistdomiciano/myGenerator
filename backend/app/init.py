@@ -1,12 +1,10 @@
 import sys
-sys.path.append('/Desktop/NewPycharm/myGenerator/backend/app/routes')
-
 import os
 import psycopg2
 from flask import Flask
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-from .routes import routes  # Use relative import
+from .routes import routes  # Correct relative import
 from .models import db
 
 

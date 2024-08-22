@@ -1,8 +1,6 @@
-import sys
-sys.path.append('/Desktop/NewPycharm/myGenerator/backend/app/routes')
-from backend.app.init import create_app, db
-from backend.app.models import User, Employee, ContractType, FinalContract
 from datetime import datetime
+from .init import create_app, db
+from .models import User, Employee, ContractType, FinalContract
 
 
 def seed():

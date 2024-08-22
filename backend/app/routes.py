@@ -4,6 +4,7 @@ from .auth import create_jwt_token
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import User, Employee, ContractType, FinalContract, db
 
+
 routes = Blueprint('routes', __name__)
 
 @routes.route('/')
