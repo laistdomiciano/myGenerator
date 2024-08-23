@@ -94,7 +94,7 @@ Project Directories Strucure:
 ├── backend/
 │   ├── app/       
 │   │   ├── auth.py  
-│   │   ├── init.py             
+│   │   ├── backend_app.py             
 │   │   ├── models.py           
 │   │   ├── routes.py                 
 │   │   ├── utils.py            
@@ -112,12 +112,13 @@ Project Directories Strucure:
 │   │   ├── home.html     
 │   │   ├── login.html
 │   │   ├── part-time.html
-│   │   ├── signup.html
+│   │   └── signup.html
 │   ├── static/
-│       ├── home.png          
-│       ├── script.js
-│       └── styles.css
+│   │   ├── home.png          
+│   │   ├── script.js
+│   │   └── styles.css
+│   ├── frontend_app.py 
 ├── venv/
 ├── .gitignore
-├── README.md
-└── run.py  
+└── README.md
+ run.py  
