@@ -1,12 +1,11 @@
-import sys
 import os
 import psycopg2
 from flask import Flask
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-from .routes import routes  # Correct relative import
+from .routes import routes
 from .models import db
-
+from flask_cors import CORS
 
 DB_NAME = 'mygeneratordb'
 migrate = Migrate()
@@ -41,6 +40,7 @@ def create_app():
     create_database()
 
     myapp = Flask(__name__)
+    CORS(myapp)
 
     myapp.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mysupersecretkey')
     myapp.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
@@ -61,4 +61,9 @@ def create_app():
 
     return myapp
 
+
 myapp = create_app()
+
+
+if __name__ == "__main__":
+    myapp.run(debug=True)

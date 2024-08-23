@@ -1,5 +1,5 @@
 from datetime import datetime
-from .init import create_app, db
+from .backend_app import create_app, db
 from .models import User, Employee, ContractType, FinalContract
 
 

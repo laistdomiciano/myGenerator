@@ -115,8 +115,8 @@ Project Directories Strucure:
 │   │   ├── signup.html
 │   ├── static/
 │       ├── home.png          
-│       ├── script.js 
-│       └── styles.css  
+│       ├── script.js
+│       └── styles.css
 ├── venv/
 ├── .gitignore
 ├── README.md
