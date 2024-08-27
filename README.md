@@ -120,5 +120,4 @@ Project Directories Strucure:
 │   ├── frontend_app.py 
 ├── venv/
 ├── .gitignore
-└── README.md
- run.py  
+└── README.md 

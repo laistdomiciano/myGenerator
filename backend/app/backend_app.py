@@ -3,8 +3,8 @@ import psycopg2
 from flask import Flask
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-from .routes import routes
-from .models import db
+from routes import routes
+from models import db
 from flask_cors import CORS
 
 DB_NAME = 'mygeneratordb'
@@ -62,8 +62,8 @@ def create_app():
     return myapp
 
 
-myapp = create_app()
+mybapp = create_app()
 
 
 if __name__ == "__main__":
-    myapp.run(debug=True)
+    mybapp.run(host="0.0.0.0", port=5002, debug=True)

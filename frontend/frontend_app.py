@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session, Flask
-from backend.app.backend_app import myapp
+from backend.app.backend_app import mybapp
 
 myapp = Flask(__name__)
 
@@ -63,5 +63,5 @@ def dashboard():
 
 
 if __name__ == "__main__":
-    myapp.run(debug=True)
+    myapp.run(host="0.0.0.0", port=5001, debug=True)
 
