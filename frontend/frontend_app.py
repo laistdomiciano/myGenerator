@@ -1,7 +1,7 @@
-from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session, Flask
-from backend.app.backend_app import mybapp
+from flask import request, session, Flask, render_template, redirect, url_for
+from flask_login import login_required
 
-myapp = Flask(__name__)
+myapp = Flask(__name__, template_folder='public')
 
 @myapp.route('/')
 def home():
@@ -57,8 +57,8 @@ def logout():
     return redirect(url_for('routes.login'))
 
 @myapp.route('/dashboard')
+@login_required
 def dashboard():
-    # This should be protected; add authentication check
     return render_template('dashboard.html')
 
 
