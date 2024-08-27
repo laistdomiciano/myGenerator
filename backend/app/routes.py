@@ -4,9 +4,65 @@ from auth import create_jwt_token
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import User, Employee, ContractType, FinalContract, db
 
-
 routes = Blueprint('routes', __name__)
 
+from flask import jsonify
+
+@routes.route('/login', methods=['POST'])
+def login():
+    if request.method == 'POST':
+        data = request.form
+        username = data['username']
+        password = data['password']
+
+        user = User.query.filter_by(username=username).first()
+        if user and check_password_hash(user.password, password):
+            access_token = create_jwt_token(user.id)
+            session['access_token'] = access_token
+            login_user(user)
+            return jsonify(success=True)
+        return jsonify(success=False, error="Invalid credentials.")
+
+@routes.route('/signup', methods=['POST'])
+def signup():
+    if request.method == 'POST':
+        data = request.form
+        name = data['name']
+        email = data['email']
+        username = data['username']
+        password1 = data['password1']
+        password2 = data['password2']
+
+        if password1 != password2:
+            return jsonify(success=False, error="Passwords do not match.")
+
+        hashed_password = generate_password_hash(password1, method='sha256')
+
+        new_user = User(name=name, email=email, username=username, password=hashed_password)
+
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            return jsonify(success=True)
+        except IntegrityError:
+            db.session.rollback()
+            return jsonify(success=False, error="Username or email already exists.")
+
+    return jsonify(success=False, error="Invalid request.")
+
+@routes.routee('/create_contract')
+@login_required
+def create_contract():
+    contract_type = request.args.get('type')
+    # Assume you have logic to create the contract
+    # For example, generate a contract and store it in the database
+    # or generate a file for download
+
+    if contract_type in ["fulltime", "parttime", "freelance"]:
+        # Create the contract logic here
+        return jsonify(success=True)
+    else:
+        return jsonify(success=False, error="Invalid contract type.")
 
 @routes.route('/contract_form', methods=['GET'])
 def contract_form():
