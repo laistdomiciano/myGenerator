@@ -1,6 +1,6 @@
 from datetime import datetime
-from .backend_app import create_app, db
-from .models import User, Employee, ContractType, FinalContract
+from app.backend_app import create_app, db
+from app.models import User, Employee, ContractType, FinalContract
 
 
 def seed():

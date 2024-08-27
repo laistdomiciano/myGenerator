@@ -1,4 +1,8 @@
+from sqlite3 import IntegrityError
+
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session
+from flask_login import login_required
+
 from utils import generate_pdf
 from auth import create_jwt_token
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -6,7 +10,6 @@ from models import User, Employee, ContractType, FinalContract, db
 
 routes = Blueprint('routes', __name__)
 
-from flask import jsonify
 
 @routes.route('/login', methods=['POST'])
 def login():
@@ -19,9 +22,9 @@ def login():
         if user and check_password_hash(user.password, password):
             access_token = create_jwt_token(user.id)
             session['access_token'] = access_token
-            login_user(user)
-            return jsonify(success=True)
+            return jsonify({'token': access_token, 'user': user})
         return jsonify(success=False, error="Invalid credentials.")
+
 
 @routes.route('/signup', methods=['POST'])
 def signup():
@@ -43,39 +46,43 @@ def signup():
         try:
             db.session.add(new_user)
             db.session.commit()
-            return jsonify(success=True)
+            return jsonify(success=True, message=f"New user {username} successfully registered.")
         except IntegrityError:
             db.session.rollback()
             return jsonify(success=False, error="Username or email already exists.")
 
     return jsonify(success=False, error="Invalid request.")
 
-@routes.routee('/create_contract')
-@login_required
-def create_contract():
-    contract_type = request.args.get('type')
-    # Assume you have logic to create the contract
-    # For example, generate a contract and store it in the database
-    # or generate a file for download
+@
+# @routes.route('/create_contract')
+# @login_required
+# def create_contract():
+#     contract_type = request.args.get('type')
+#     # Assume you have logic to create the contract
+#     # For example, generate a contract and store it in the database
+#     # or generate a file for download
+#
+#     if contract_type in ["full-time", "part-time", "freelance"]:
+#         # Create the contract logic here
+#         return jsonify(success=True)
+#     else:
+#         return jsonify(success=False, error="Invalid contract type.")
 
-    if contract_type in ["fulltime", "parttime", "freelance"]:
-        # Create the contract logic here
-        return jsonify(success=True)
-    else:
-        return jsonify(success=False, error="Invalid contract type.")
+#
+# @routes.route('/contract_form', methods=['GET'])
+# def contract_form():
+#     contract_type = request.args.get('type')
+#     if not contract_type:
+#         return jsonify({'error': 'Contract type is required.'}), 400
+#
+#     if contract_type in ['Full-time', 'Part-time', 'Freelance']:
+#         return render_template(f'{contract_type}_form.html', contract_type=contract_type)
+#     else:
+#         return jsonify({'error': 'Invalid contract type.'}), 400
 
-@routes.route('/contract_form', methods=['GET'])
-def contract_form():
-    contract_type = request.args.get('type')
-    if not contract_type:
-        return jsonify({'error': 'Contract type is required.'}), 400
-
-    if contract_type in ['Full-time', 'Part-time', 'Freelance']:
-        return render_template(f'{contract_type}_form.html', contract_type=contract_type)
-    else:
-        return jsonify({'error': 'Invalid contract type.'}), 400
 
 @routes.route('/create_contract', methods=['POST'])
+@login_required
 def create_contract():
     user_id = session.get('user_id')
     if not user_id:

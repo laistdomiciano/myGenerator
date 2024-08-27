@@ -1,6 +1,6 @@
 from flask import request, session, Flask, render_template, redirect, url_for
 from flask_login import LoginManager, login_required, current_user
-from backend.app.models import User  # Adjust import path as necessary
+from backend.app.models import User
 
 myapp = Flask(__name__, template_folder='public')
 
