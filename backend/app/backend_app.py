@@ -3,13 +3,15 @@ import psycopg2
 from flask import Flask
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
+from flask_login import LoginManager
 from routes import routes
-from models import db
+from models import db, User
 from flask_cors import CORS
 
 DB_NAME = 'mygeneratordb'
 migrate = Migrate()
 jwt = JWTManager()
+login_manager = LoginManager()
 
 def create_database():
     try:
@@ -35,6 +37,8 @@ def create_database():
         print(f"Error creating the database: {e}")
         raise
 
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 def create_app():
     create_database()
@@ -53,6 +57,11 @@ def create_app():
     migrate.init_app(myapp, db)
     jwt.init_app(myapp)
 
+    # Initialize LoginManager
+    login_manager.init_app(myapp)
+    login_manager.login_view = 'routes.login'  # Redirects to login view if not authenticated
+    login_manager.user_loader(load_user)  # Loads user from the database by user_id
+
     myapp.register_blueprint(routes, url_prefix='/')
 
     with myapp.app_context():
@@ -61,9 +70,7 @@ def create_app():
 
     return myapp
 
-
 mybapp = create_app()
-
 
 if __name__ == "__main__":
     mybapp.run(host="0.0.0.0", port=5002, debug=True)
