@@ -1,6 +1,7 @@
 from sqlite3 import IntegrityError
 from flask import Blueprint, request, jsonify, session
 from flask_login import login_required
+from flask_jwt_extended import create_access_token
 from auth import create_jwt_token
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import User, Employee, ContractType, FinalContract, db
@@ -14,7 +15,7 @@ def login():
     if not request.is_json:
         return jsonify({'error': 'Content-Type must be application/json'}), 400
 
-    data = request.json
+    data = request.get_json()
 
     username = data.get('username')
     password = data.get('password')
@@ -71,13 +72,14 @@ def signup():
 @routes.route('/update_user', methods=['PUT'])
 @login_required
 def update_user():
-    print("Session:", session)
-    print("Request data:", request.args)
     user_id = session.get('user_id')
     if not user_id:
         return jsonify({'error': 'User not authenticated.'}), 401
 
-    data = request.args  # Use `request.args` for query parameters or `request.form` for form data
+    data = request.get_json()  # Use `request.get_json()` to parse JSON data
+
+    if not data:
+        return jsonify({'error': 'No data provided.'}), 400
 
     name = data.get('name')
     email = data.get('email')
@@ -98,27 +100,30 @@ def update_user():
     return jsonify({'message': 'User updated successfully.'})
 
 
+@routes.route('/create_employee', methods=['POST'])
+@login_required
+def create_employee():
+    if request.method == 'POST':
+        data = request.form
+        name = data['name']
+        position = data['position']
+        department = data['department']
 
-# @routes.route('/create_employee', methods=['POST'])
-# @login_required
-# def create_employee():
-#     data = request.form
-#     name = data.get('name')
-#     position = data.get('position')
-#     department = data.get('department')
-#
-#     if not name or not position or not department:
-#         return jsonify(success=False, error="Name, position, and department are required.")
-#
-#     new_employee = Employee(name=name, position=position, department=department)
-#     db.session.add(new_employee)
-#     db.session.commit()
-#
-#     return jsonify(success=True, message="New employee created successfully.", employee_id=new_employee.id)
+    if not name or not position or not department:
+        return jsonify(success=False, error="Name, position, and department are required.")
 
+    new_employee = Employee(name=name, position=position, department=department)
 
+    try:
+        db.session.add(new_employee)
+        db.session.commit()
+        return jsonify(success=True, message=f"New employee {name} successfully registered.")
 
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify(success=False, error="Employee already exists.")
 
+    return jsonify(success=False, error="Invalid request.")
 
 
 # @routes.route('/create_contract', methods=['POST'])
