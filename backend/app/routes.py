@@ -11,21 +11,6 @@ from models import User, Employee, ContractType, FinalContract, db
 routes = Blueprint('routes', __name__)
 
 
-@routes.route('/login', methods=['POST'])
-def login():
-    if request.method == 'POST':
-        data = request.form
-        username = data['username']
-        password = data['password']
-
-        user = User.query.filter_by(username=username).first()
-        if user and check_password_hash(user.password, password):
-            access_token = create_jwt_token(user.id)
-            session['access_token'] = access_token
-            return jsonify({'token': access_token, 'user': user})
-        return jsonify(success=False, error="Invalid credentials.")
-
-
 @routes.route('/signup', methods=['POST'])
 def signup():
     if request.method == 'POST':
@@ -53,32 +38,48 @@ def signup():
 
     return jsonify(success=False, error="Invalid request.")
 
-@
-# @routes.route('/create_contract')
-# @login_required
-# def create_contract():
-#     contract_type = request.args.get('type')
-#     # Assume you have logic to create the contract
-#     # For example, generate a contract and store it in the database
-#     # or generate a file for download
-#
-#     if contract_type in ["full-time", "part-time", "freelance"]:
-#         # Create the contract logic here
-#         return jsonify(success=True)
-#     else:
-#         return jsonify(success=False, error="Invalid contract type.")
+@routes.route('/login', methods=['POST'])
+def login():
+    if request.method == 'POST':
+        data = request.form
+        username = data['username']
+        password = data['password']
 
-#
-# @routes.route('/contract_form', methods=['GET'])
-# def contract_form():
-#     contract_type = request.args.get('type')
-#     if not contract_type:
-#         return jsonify({'error': 'Contract type is required.'}), 400
-#
-#     if contract_type in ['Full-time', 'Part-time', 'Freelance']:
-#         return render_template(f'{contract_type}_form.html', contract_type=contract_type)
-#     else:
-#         return jsonify({'error': 'Invalid contract type.'}), 400
+        user = User.query.filter_by(username=username).first()
+        if user and check_password_hash(user.password, password):
+            access_token = create_jwt_token(user.id)
+            session['access_token'] = access_token
+            return jsonify({'token': access_token, 'user': user})
+        return jsonify(success=False, error="Invalid credentials.")
+
+
+@routes.route('/update_user', methods=['PUT'])
+@login_required
+def update_user():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'User not authenticated.'}), 401
+
+    data = request.form
+    name = data.get('name')
+    email = data.get('email')
+    password = data.get('password')
+
+    user = User.query.get(user_id)
+    if user:
+        if name:
+            user.name = name
+        if email:
+            user.email = email
+        if password:
+            user.password = generate_password_hash(password, method='sha256')
+
+        db.session.commit()
+        return jsonify(success=True, message="User updated successfully.")
+
+    return jsonify(success=False, error="User not found.")
+
+
 
 
 @routes.route('/create_contract', methods=['POST'])
@@ -92,6 +93,32 @@ def create_contract():
     employee_id = data.get('employee_id')
     contract_type_id = data.get('contract_type_id')
     content = data.get('content')
+
+    # @routes.route('/create_contract')
+    # @login_required
+    # def create_contract():
+    #     contract_type = request.args.get('type')
+    #     # Assume you have logic to create the contract
+    #     # For example, generate a contract and store it in the database
+    #     # or generate a file for download
+    #
+    #     if contract_type in ["full-time", "part-time", "freelance"]:
+    #         # Create the contract logic here
+    #         return jsonify(success=True)
+    #     else:
+    #         return jsonify(success=False, error="Invalid contract type.")
+
+    #
+    # @routes.route('/contract_form', methods=['GET'])
+    # def contract_form():
+    #     contract_type = request.args.get('type')
+    #     if not contract_type:
+    #         return jsonify({'error': 'Contract type is required.'}), 400
+    #
+    #     if contract_type in ['Full-time', 'Part-time', 'Freelance']:
+    #         return render_template(f'{contract_type}_form.html', contract_type=contract_type)
+    #     else:
+    #         return jsonify({'error': 'Invalid contract type.'}), 400
 
     new_contract = FinalContract(user_id=user_id, employee_id=employee_id, contract_type_id=contract_type_id,
                                  content=content)
