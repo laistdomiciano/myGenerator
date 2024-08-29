@@ -3,7 +3,6 @@ import psycopg2
 from flask import Flask
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-from flask_login import LoginManager
 from routes import routes
 from models import db, User
 from flask_cors import CORS
@@ -11,7 +10,6 @@ from flask_cors import CORS
 DB_NAME = 'mygeneratordb'
 migrate = Migrate()
 jwt = JWTManager()
-login_manager = LoginManager()
 
 def create_database():
     try:
@@ -56,11 +54,6 @@ def create_app():
     db.init_app(myapp)
     migrate.init_app(myapp, db)
     jwt.init_app(myapp)
-
-    # Initialize LoginManager
-    login_manager.init_app(myapp)
-    login_manager.login_view = 'routes.login'  # Redirects to login view if not authenticated
-    login_manager.user_loader(load_user)  # Loads user from the database by user_id
 
     myapp.register_blueprint(routes, url_prefix='/')
 
