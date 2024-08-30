@@ -140,44 +140,20 @@ def get_contract_type(contract_id):
 @routes.route('/get_new_employee_id/<int:employee_id>', methods=['GET'])
 @jwt_required()
 def get_new_employee_id(employee_id):
-    pass
+    employee = Employee.query.get(employee_id)
+    if not employee:
+        return jsonify({'error': 'Employee not found.'}), 404
 
-@routes.route('/create_contract/new_employee_id>', methods=['PUT'])
-@jwt_required()
-def create_contract(contract_type, new_employee_id):
-    pass
+    if employee.contracts:
+        return jsonify({'error': 'Employee already has a contract.'}), 400
+
+    return jsonify({'new_employee_id': employee.id}), 200
+
 
 @routes.route('/update_employee/<int:user_id>', methods=['PUT'])
 @jwt_required()
 def update_employee(employee_id):
     pass
-
-
-# @routes.route('/create_contract', methods=['POST'])
-#@jwt_required()
-# def create_contract():
-#     user_id = session.get('user_id')
-#     if not user_id:
-#         return jsonify({'error': 'User not authenticated.'}), 401
-#
-#     data = request.form
-#     employee_id = data.get('employee_id')
-#     contract_type_id = data.get('contract_type_id')
-#     content = data.get('content')
-
-# @routes.route('/create_contract')
-# @jwt_required()
-# def create_contract():
-#     contract_type = request.args.get('type')
-#     # Assume you have logic to create the contract
-#     # For example, generate a contract and store it in the database
-#     # or generate a file for download
-#
-#     if contract_type in ["full-time", "part-time", "freelance"]:
-#         # Create the contract logic here
-#         return jsonify(success=True)
-#     else:
-#         return jsonify(success=False, error="Invalid contract type.")
 
 
 #@routes.route('/contract_form', methods=['GET'])
