@@ -120,10 +120,21 @@ def update_user(user_id):
     db.session.commit()
     return jsonify({'message': 'User updated successfully.'})
 
+
 @routes.route('/get_contract_type/<int:contract_id>', methods=['GET'])
 @jwt_required()
 def get_contract_type(contract_id):
-    pass
+    contract_type = ContractType.query.get(contract_id)
+    if not contract_type:
+        return jsonify({'error': 'Contract type not found.'}), 404
+
+    contract_type_data = {
+        'id': contract_type.id,
+        'name': contract_type.name,
+        'template': contract_type.template
+    }
+
+    return jsonify({'contract_type': contract_type_data}), 200
 
 
 @routes.route('/get_new_employee_id/<int:employee_id>', methods=['GET'])
