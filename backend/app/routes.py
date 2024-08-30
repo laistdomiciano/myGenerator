@@ -123,10 +123,24 @@ def update_user(user_id):
 @routes.route('/get_contract_type/<int:contract_id>', methods=['GET'])
 @jwt_required()
 def get_contract_type(contract_id):
+    pass
 
-@routes.route('/update_user/<int:user_id>', methods=['PUT'])
+
+@routes.route('/get_new_employee_id/<int:employee_id>', methods=['GET'])
 @jwt_required()
-def update_user(user_id):
+def get_new_employee_id(employee_id):
+    pass
+
+@routes.route('/create_contract/new_employee_id>', methods=['PUT'])
+@jwt_required()
+def create_contract(contract_type, new_employee_id):
+    pass
+
+@routes.route('/update_employee/<int:user_id>', methods=['PUT'])
+@jwt_required()
+def update_employee(employee_id):
+    pass
+
 
 # @routes.route('/create_contract', methods=['POST'])
 #@jwt_required()
