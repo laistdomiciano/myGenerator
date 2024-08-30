@@ -120,6 +120,13 @@ def update_user(user_id):
     db.session.commit()
     return jsonify({'message': 'User updated successfully.'})
 
+@routes.route('/get_contract_type/<int:contract_id>', methods=['GET'])
+@jwt_required()
+def get_contract_type(contract_id):
+
+@routes.route('/update_user/<int:user_id>', methods=['PUT'])
+@jwt_required()
+def update_user(user_id):
 
 # @routes.route('/create_contract', methods=['POST'])
 #@jwt_required()
@@ -133,36 +140,36 @@ def update_user(user_id):
 #     contract_type_id = data.get('contract_type_id')
 #     content = data.get('content')
 
-    # @routes.route('/create_contract')
-    # @jwt_required()
-    # def create_contract():
-    #     contract_type = request.args.get('type')
-    #     # Assume you have logic to create the contract
-    #     # For example, generate a contract and store it in the database
-    #     # or generate a file for download
-    #
-    #     if contract_type in ["full-time", "part-time", "freelance"]:
-    #         # Create the contract logic here
-    #         return jsonify(success=True)
-    #     else:
-    #         return jsonify(success=False, error="Invalid contract type.")
+# @routes.route('/create_contract')
+# @jwt_required()
+# def create_contract():
+#     contract_type = request.args.get('type')
+#     # Assume you have logic to create the contract
+#     # For example, generate a contract and store it in the database
+#     # or generate a file for download
+#
+#     if contract_type in ["full-time", "part-time", "freelance"]:
+#         # Create the contract logic here
+#         return jsonify(success=True)
+#     else:
+#         return jsonify(success=False, error="Invalid contract type.")
 
-    #
-    # @routes.route('/contract_form', methods=['GET'])
-    # def contract_form():
-    #     contract_type = request.args.get('type')
-    #     if not contract_type:
-    #         return jsonify({'error': 'Contract type is required.'}), 400
-    #
-    #     if contract_type in ['Full-time', 'Part-time', 'Freelance']:
-    #         return render_template(f'{contract_type}_form.html', contract_type=contract_type)
-    #     else:
-    #         return jsonify({'error': 'Invalid contract type.'}), 400
 
-    # new_contract = FinalContract(user_id=user_id, employee_id=employee_id, contract_type_id=contract_type_id,
-    #                              content=content)
-    # db.session.add(new_contract)
-    # db.session.commit()
-    #
-    # pdf_path = generate_pdf(content)
-    # return jsonify({'pdf_path': pdf_path})
+#@routes.route('/contract_form', methods=['GET'])
+# def contract_form():
+#     contract_type = request.args.get('type')
+#     if not contract_type:
+#         return jsonify({'error': 'Contract type is required.'}), 400
+#
+#     if contract_type in ['Full-time', 'Part-time', 'Freelance']:
+#         return render_template(f'{contract_type}_form.html', contract_type=contract_type)
+#     else:
+#         return jsonify({'error': 'Invalid contract type.'}), 400
+
+# new_contract = FinalContract(user_id=user_id, employee_id=employee_id, contract_type_id=contract_type_id,
+#                              content=content)
+# db.session.add(new_contract)
+# db.session.commit()
+#
+# pdf_path = generate_pdf(content)
+# return jsonify({'pdf_path': pdf_path})

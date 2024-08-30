@@ -1,7 +1,9 @@
 # Employment Contract Generator API
 
 ## Overview
-This is a Flask-based API that allows users to generate employment contracts. Users can choose from three types of contracts: Full-Time Employment, Part-Time Employment, and Freelance Contract. The application uses JWT for authentication and PostgreSQL for data storage.
+This is a Flask-based API that allows users to generate employment contracts. 
+Users can choose from three types of contracts: Full-Time Employment, Part-Time Employment, and Freelance Contract. 
+The application uses JWT for authentication and PostgreSQL for data storage.
 
 ## Features
 - User registration and authentication

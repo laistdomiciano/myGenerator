@@ -21,6 +21,7 @@ class Employee(db.Model):
     name = db.Column(db.String(150))
     position = db.Column(db.String(150))
     department = db.Column(db.String(100))
+    contract_status = db.Column(db.Boolean(False))
 
     # Relationship to FinalContract, using backref for reverse access
     contracts = db.relationship("FinalContract", backref="employee", lazy=True)
