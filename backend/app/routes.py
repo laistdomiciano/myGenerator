@@ -141,13 +141,44 @@ def get_contract_type(contract_id):
 @jwt_required()
 def get_new_employee_id(employee_id):
     employee = Employee.query.get(employee_id)
+    final_contract = FinalContract.query.get(employee_id)
     if not employee:
         return jsonify({'error': 'Employee not found.'}), 404
 
-    if employee.contracts:
+    if employee.final_contracts:
         return jsonify({'error': 'Employee already has a contract.'}), 400
 
     return jsonify({'new_employee_id': employee.id}), 200
+
+
+@routes.route('/create_contract/<int:contract_type>/<int:new_employee_id>', methods=['POST'])
+@jwt_required()
+def create_contract(contract_type, new_employee_id):
+    data = request.get_json()
+    user_id = data.get('user_id')
+    content = data.get('content')
+
+    if not user_id or not content:
+        return jsonify({'error': 'User ID and contract content are required.'}), 400
+
+    user = User.query.get(user_id)
+    employee = Employee.query.get(new_employee_id)
+    contract_type = ContractType.query.get(contract_type)
+
+    if not user or not employee or not contract_type:
+        return jsonify({'error': 'Invalid user, employee, or contract type.'}), 404
+
+    new_contract = FinalContract(
+        user_id=user_id,
+        employee_id=new_employee_id,
+        contract_type_id=contract_type.id,
+        content=content
+    )
+
+    db.session.add(new_contract)
+    db.session.commit()
+
+    return jsonify({'message': 'Contract created successfully.', 'contract_id': new_contract.id}), 201
 
 
 @routes.route('/update_employee/<int:user_id>', methods=['PUT'])
