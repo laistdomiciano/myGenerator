@@ -149,43 +149,59 @@ def employees_wo_contract():
 @routes.route('/create_contract/<int:contract_type_id>/<int:employee_id>', methods=['POST'])
 @jwt_required()
 def create_contract(contract_type_id, employee_id):
+    user_id = get_jwt_identity()
     data = request.get_json()
 
-    contract_type = ContractType.query.get(contract_type_id)
-    employee = Employee.query.get(employee_id)
-    user_id = data.get('user_id')
+    # Call the employees_wo_contract function to get the list of employees without a contract
+    response = employees_wo_contract()
+    if response[1] != 200:  # Check if the response status is not 200 OK
+        return response
 
+    employees_list = response[0].get_json()
+
+    # Check if the specified employee is in the list of employees without a contract
+    if not any(emp['id'] == employee_id for emp in employees_list):
+        return jsonify({'error': 'Employee already has a contract or does not exist.'}), 400
+
+    # Proceed to create the contract
+    contract_type = ContractType.query.get(contract_type_id)
     if not contract_type:
         return jsonify({'error': 'Invalid contract type.'}), 404
 
+    employee = Employee.query.get(employee_id)
     if not employee:
         return jsonify({'error': 'Invalid employee ID.'}), 404
 
-    existing_contract = FinalContract.query.filter_by(employee_id=employee_id).first()
-    if existing_contract:
-        return jsonify({'error': 'Employee already has a contract.'}), 400
+    # Validate required data fields
+    required_fields = ['start_date', 'company_name', 'job_title']
+    for field in required_fields:
+        if field not in data or not data[field]:
+            return jsonify({'error': f'{field} is required.'}), 400
 
-    template = contract_type.template
+    # Format the contract template with the provided data
+    try:
+        formatted_content = contract_type.template.format(
+            Start_Date=data.get('start_date', 'TBD'),
+            Company_Name=data.get('company_name', 'TBD'),
+            Employee_Name=employee.name,
+            Job_Title=data.get('job_title', 'TBD'),
+            Job_Responsibilities=data.get('job_responsibilities', 'TBD'),
+            Salary_Amount=data.get('salary_amount', 'TBD'),
+            List_of_Benefits=data.get('benefits', 'TBD'),
+            Work_Hours=data.get('work_hours', 'TBD'),
+            Leave_Days=data.get('leave_days', 'TBD'),
+            Notice_Period=data.get('notice_period', 'TBD'),
+            Hourly_Rate=data.get('hourly_rate', 'TBD'),
+            Number_of_Hours=data.get('number_of_hours', 'TBD'),
+            Description_of_Services=data.get('description_of_services', 'TBD'),
+            Fee_Amount=data.get('fee_amount', 'TBD'),
+            Payment_Schedule=data.get('payment_schedule', 'TBD'),
+            Ownership_Terms=data.get('ownership_terms', 'TBD')
+        )
+    except KeyError as e:
+        return jsonify({'error': f'Missing or incorrect data for contract template: {e}'}), 400
 
-    formatted_content = template.format(
-        Start_Date=data.get('start_date', 'TBD'),
-        Company_Name=data.get('company_name', 'TBD'),
-        Employee_Name=employee.name,
-        Job_Title=data.get('job_title', 'TBD'),
-        Job_Responsibilities=data.get('job_responsibilities', 'TBD'),
-        Salary_Amount=data.get('salary_amount', 'TBD'),
-        List_of_Benefits=data.get('benefits', 'TBD'),
-        Work_Hours=data.get('work_hours', 'TBD'),
-        Leave_Days=data.get('leave_days', 'TBD'),
-        Notice_Period=data.get('notice_period', 'TBD'),
-        Hourly_Rate=data.get('hourly_rate', 'TBD'),
-        Number_of_Hours=data.get('number_of_hours', 'TBD'),
-        Description_of_Services=data.get('description_of_services', 'TBD'),
-        Fee_Amount=data.get('fee_amount', 'TBD'),
-        Payment_Schedule=data.get('payment_schedule', 'TBD'),
-        Ownership_Terms=data.get('ownership_terms', 'TBD')
-    )
-
+    # Create the contract
     new_contract = FinalContract(
         user_id=user_id,
         employee_id=employee.id,
@@ -193,6 +209,8 @@ def create_contract(contract_type_id, employee_id):
         content=formatted_content
     )
 
+    # Mark the employee as having a contract
+    employee.has_contract = True
     db.session.add(new_contract)
     db.session.commit()
 

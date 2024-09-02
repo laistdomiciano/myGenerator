@@ -1,4 +1,5 @@
 from fpdf import FPDF
+from datetime import datetime
 import boto3
 
 AWS_S3_BUCKET_NAME = '<bucket_name>'
@@ -23,7 +24,7 @@ def generate_pdf(content):
     pdf.set_font("Arial", size=12)
     pdf.multi_cell(0, 10, content)
 
-    file_path = 'static/contracts/generated_contract.pdf'
+    file_path = f'static/contracts/generated_contract{SOMETHING THAT CHANGES HERE}.pdf'
     pdf.output(file_path)
     return file_path
 
