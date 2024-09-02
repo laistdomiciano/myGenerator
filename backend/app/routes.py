@@ -148,26 +148,30 @@ def employee_wo_contract(employee_id):
     return jsonify({'new_employee_id': employee.id}), 200
 
 
-@routes.route('/create_contract/<int:contract_type>/<int:new_employee_id>', methods=['POST'])
+@routes.route('/create_contract/<int:contract_type_id>/<int:employee_id>', methods=['POST'])
 @jwt_required()
-def create_contract(contract_type, new_employee_id):
+def create_contract(contract_type_id, employee_id):
     data = request.get_json()
+
+    # Ensure the JSON data is correctly formatted
     user_id = data.get('user_id')
     content = data.get('content')
 
     if not user_id or not content:
         return jsonify({'error': 'User ID and contract content are required.'}), 400
 
+    # Fetch records from the database
     user = User.query.get(user_id)
-    employee = Employee.query.get(new_employee_id)
-    contract_type = ContractType.query.get(contract_type)
+    employee = Employee.query.get(employee_id)
+    contract_type = ContractType.query.get(contract_type_id)
 
     if not user or not employee or not contract_type:
         return jsonify({'error': 'Invalid user, employee, or contract type.'}), 404
 
+    # Create the new contract
     new_contract = FinalContract(
         user_id=user_id,
-        employee_id=new_employee_id,
+        employee_id=employee.id,
         contract_type_id=contract_type.id,
         content=content
     )
