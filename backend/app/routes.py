@@ -140,8 +140,9 @@ def employee_wo_contract(employee_id):
     if not employee:
         return jsonify({'error': 'Employee not found.'}), 404
 
-    # Check if the employee has any contracts
-    if employee.final_contracts:
+    contract_exists = FinalContract.query.filter_by(employee_id=employee_id).first()
+
+    if contract_exists:
         return jsonify({'error': 'Employee already has a contract.'}), 400
 
     return jsonify({'new_employee_id': employee.id}), 200
