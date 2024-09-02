@@ -18,20 +18,16 @@ def login():
         username = data.get('username')
         password = data.get('password')
 
-        # Check if the username and password are provided
         if not username or not password:
             return jsonify({'error': 'Username and password are required.'}), 400
 
-        # Query the user by username
         user = User.query.filter_by(username=username).first()
 
         if not user or not check_password_hash(user.password, password):
             return jsonify({'error': 'Invalid username or password.'}), 401
 
-        # Generate JWT token
         access_token = create_access_token(identity=user.id)
 
-        # Serialize user object to dictionary with only username
         user_data = {
             'username': user.username
         }
@@ -137,14 +133,14 @@ def get_contract_type(contract_id):
     return jsonify({'contract_type': contract_type_data}), 200
 
 
-@routes.route('/get_new_employee_id/<int:employee_id>', methods=['GET'])
+@routes.route('/employee_wo_contract/<int:employee_id>', methods=['GET'])
 @jwt_required()
-def get_new_employee_id(employee_id):
+def employee_wo_contract(employee_id):
     employee = Employee.query.get(employee_id)
-    final_contract = FinalContract.query.get(employee_id)
     if not employee:
         return jsonify({'error': 'Employee not found.'}), 404
 
+    # Check if the employee has any contracts
     if employee.final_contracts:
         return jsonify({'error': 'Employee already has a contract.'}), 400
 
@@ -185,23 +181,3 @@ def create_contract(contract_type, new_employee_id):
 @jwt_required()
 def update_employee(employee_id):
     pass
-
-
-#@routes.route('/contract_form', methods=['GET'])
-# def contract_form():
-#     contract_type = request.args.get('type')
-#     if not contract_type:
-#         return jsonify({'error': 'Contract type is required.'}), 400
-#
-#     if contract_type in ['Full-time', 'Part-time', 'Freelance']:
-#         return render_template(f'{contract_type}_form.html', contract_type=contract_type)
-#     else:
-#         return jsonify({'error': 'Invalid contract type.'}), 400
-
-# new_contract = FinalContract(user_id=user_id, employee_id=employee_id, contract_type_id=contract_type_id,
-#                              content=content)
-# db.session.add(new_contract)
-# db.session.commit()
-#
-# pdf_path = generate_pdf(content)
-# return jsonify({'pdf_path': pdf_path})

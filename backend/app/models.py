@@ -10,7 +10,6 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(100), unique=True)
     username = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(100))
-    is_active = db.Column(db.Boolean(), default=True)
 
     # Relationship to FinalContract, using backref for reverse access
     final_contracts = db.relationship('FinalContract', backref='user', lazy=True)
