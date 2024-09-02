@@ -153,27 +153,46 @@ def employee_wo_contract(employee_id):
 def create_contract(contract_type_id, employee_id):
     data = request.get_json()
 
-    # Ensure the JSON data is correctly formatted
-    user_id = data.get('user_id')
-    content = data.get('content')
-
-    if not user_id or not content:
-        return jsonify({'error': 'User ID and contract content are required.'}), 400
-
-    # Fetch records from the database
-    user = User.query.get(user_id)
-    employee = Employee.query.get(employee_id)
     contract_type = ContractType.query.get(contract_type_id)
+    employee = Employee.query.get(employee_id)
+    user_id = data.get('user_id')
 
-    if not user or not employee or not contract_type:
-        return jsonify({'error': 'Invalid user, employee, or contract type.'}), 404
+    if not contract_type:
+        return jsonify({'error': 'Invalid contract type.'}), 404
 
-    # Create the new contract
+    if not employee:
+        return jsonify({'error': 'Invalid employee ID.'}), 404
+
+    existing_contract = FinalContract.query.filter_by(employee_id=employee_id).first()
+    if existing_contract:
+        return jsonify({'error': 'Employee already has a contract.'}), 400
+
+    template = contract_type.template
+
+    formatted_content = template.format(
+        Start_Date=data.get('start_date', 'TBD'),
+        Company_Name=data.get('company_name', 'TBD'),
+        Employee_Name=employee.name,
+        Job_Title=data.get('job_title', 'TBD'),
+        Job_Responsibilities=data.get('job_responsibilities', 'TBD'),
+        Salary_Amount=data.get('salary_amount', 'TBD'),
+        List_of_Benefits=data.get('benefits', 'TBD'),
+        Work_Hours=data.get('work_hours', 'TBD'),
+        Leave_Days=data.get('leave_days', 'TBD'),
+        Notice_Period=data.get('notice_period', 'TBD'),
+        Hourly_Rate=data.get('hourly_rate', 'TBD'),
+        Number_of_Hours=data.get('number_of_hours', 'TBD'),
+        Description_of_Services=data.get('description_of_services', 'TBD'),
+        Fee_Amount=data.get('fee_amount', 'TBD'),
+        Payment_Schedule=data.get('payment_schedule', 'TBD'),
+        Ownership_Terms=data.get('ownership_terms', 'TBD')
+    )
+
     new_contract = FinalContract(
         user_id=user_id,
         employee_id=employee.id,
         contract_type_id=contract_type.id,
-        content=content
+        content=formatted_content
     )
 
     db.session.add(new_contract)
