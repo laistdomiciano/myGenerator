@@ -20,10 +20,19 @@ class Employee(db.Model):
     name = db.Column(db.String(150))
     position = db.Column(db.String(150))
     department = db.Column(db.String(100))
+    has_contract = db.Column(db.Boolean, default=False)
 
     # Relationship to FinalContract, using backref for reverse access
     contracts = db.relationship("FinalContract", backref="employee", lazy=True)
 
+    def to_json(self):
+        return {
+            "id": int(self.id),
+            "name": self.name,
+            "position": self.position,
+            "department": self.department,
+            "has_contract": bool(self.has_contract)
+        }
 
 class ContractType(db.Model):
     id = db.Column(db.Integer, primary_key=True)

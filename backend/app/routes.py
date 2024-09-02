@@ -133,19 +133,17 @@ def get_contract_type(contract_id):
     return jsonify({'contract_type': contract_type_data}), 200
 
 
-@routes.route('/employee_wo_contract/<int:employee_id>', methods=['GET'])
+@routes.route('/employees_wo_contract', methods=['GET'])
 @jwt_required()
-def employee_wo_contract(employee_id):
-    employee = Employee.query.get(employee_id)
-    if not employee:
+def employees_wo_contract():
+    employees = Employee.query.filter(Employee.has_contract.is_(False)).all()
+    if not employees:
         return jsonify({'error': 'Employee not found.'}), 404
+    employees_list = []
+    for emp in employees:
+        employees_list.append(emp.to_json())
 
-    contract_exists = FinalContract.query.filter_by(employee_id=employee_id).first()
-
-    if contract_exists:
-        return jsonify({'error': 'Employee already has a contract.'}), 400
-
-    return jsonify({'new_employee_id': employee.id}), 200
+    return jsonify(employees_list), 200
 
 
 @routes.route('/create_contract/<int:contract_type_id>/<int:employee_id>', methods=['POST'])
