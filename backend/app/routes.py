@@ -1,6 +1,6 @@
 from sqlite3 import IntegrityError
 from flask import Blueprint, request, jsonify, session
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import User, Employee, ContractType, FinalContract, db
 
@@ -152,18 +152,15 @@ def create_contract(contract_type_id, employee_id):
     user_id = get_jwt_identity()
     data = request.get_json()
 
-    # Call the employees_wo_contract function to get the list of employees without a contract
     response = employees_wo_contract()
-    if response[1] != 200:  # Check if the response status is not 200 OK
+    if response[1] != 200:
         return response
 
     employees_list = response[0].get_json()
 
-    # Check if the specified employee is in the list of employees without a contract
     if not any(emp['id'] == employee_id for emp in employees_list):
         return jsonify({'error': 'Employee already has a contract or does not exist.'}), 400
 
-    # Proceed to create the contract
     contract_type = ContractType.query.get(contract_type_id)
     if not contract_type:
         return jsonify({'error': 'Invalid contract type.'}), 404
@@ -172,13 +169,11 @@ def create_contract(contract_type_id, employee_id):
     if not employee:
         return jsonify({'error': 'Invalid employee ID.'}), 404
 
-    # Validate required data fields
     required_fields = ['start_date', 'company_name', 'job_title']
     for field in required_fields:
         if field not in data or not data[field]:
             return jsonify({'error': f'{field} is required.'}), 400
 
-    # Format the contract template with the provided data
     try:
         formatted_content = contract_type.template.format(
             Start_Date=data.get('start_date', 'TBD'),
@@ -209,7 +204,6 @@ def create_contract(contract_type_id, employee_id):
         content=formatted_content
     )
 
-    # Mark the employee as having a contract
     employee.has_contract = True
     db.session.add(new_contract)
     db.session.commit()
