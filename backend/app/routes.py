@@ -3,6 +3,8 @@ from flask import Blueprint, request, jsonify, session
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import User, Employee, ContractType, FinalContract, db
+from utils import generate_pdf, upload_to_s3
+import os
 
 routes = Blueprint('routes', __name__)
 
@@ -146,6 +148,8 @@ def employees_wo_contract():
     return jsonify(employees_list), 200
 
 
+from utils import generate_pdf, upload_to_s3
+
 @routes.route('/create_contract/<int:contract_type_id>/<int:employee_id>', methods=['POST'])
 @jwt_required()
 def create_contract(contract_type_id, employee_id):
@@ -208,7 +212,16 @@ def create_contract(contract_type_id, employee_id):
     db.session.add(new_contract)
     db.session.commit()
 
-    return jsonify({'message': 'Contract created successfully.', 'contract_id': new_contract.id}), 201
+    # Generate PDF
+    pdf_path, pdf_filename = generate_pdf(formatted_content, new_contract.id, employee.name)
+
+    # Upload PDF to S3
+    s3_url = upload_to_s3(pdf_path, pdf_filename)
+
+    # Cleanup temporary file
+    os.remove(pdf_path)
+
+    return jsonify({'message': 'Contract created successfully.', 'contract_id': new_contract.id, 'pdf_url': s3_url}), 201
 
 
 @routes.route('/update_employee/<int:user_id>', methods=['PUT'])
