@@ -20,7 +20,7 @@ class Employee(db.Model):
     name = db.Column(db.String(150))
     position = db.Column(db.String(150))
     department = db.Column(db.String(100))
-    start_date = db.Column(db.Date)
+    start_date = db.Column(db.String(100))
     job_title = db.Column(db.String(150))
     salary = db.Column(db.Float)
     benefits = db.Column(db.String(255))
