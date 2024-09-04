@@ -148,22 +148,11 @@ def employees_wo_contract():
     return jsonify(employees_list), 200
 
 
-from utils import generate_pdf, upload_to_s3
-
 @routes.route('/create_contract/<int:contract_type_id>/<int:employee_id>', methods=['POST'])
 @jwt_required()
 def create_contract(contract_type_id, employee_id):
     user_id = get_jwt_identity()
     data = request.get_json()
-
-    response = employees_wo_contract()
-    if response[1] != 200:
-        return response
-
-    employees_list = response[0].get_json()
-
-    if not any(emp['id'] == employee_id for emp in employees_list):
-        return jsonify({'error': 'Employee already has a contract or does not exist.'}), 400
 
     contract_type = ContractType.query.get(contract_type_id)
     if not contract_type:
@@ -173,14 +162,9 @@ def create_contract(contract_type_id, employee_id):
     if not employee:
         return jsonify({'error': 'Invalid employee ID.'}), 404
 
-    required_fields = ['start_date', 'company_name', 'job_title']
-    for field in required_fields:
-        if field not in data or not data[field]:
-            return jsonify({'error': f'{field} is required.'}), 400
-
     try:
         formatted_content = contract_type.template.format(
-            Start_Date=data.get('start_date', 'TBD'),
+            Start_Date=employee.start_date,
             Company_Name=data.get('company_name', 'TBD'),
             Employee_Name=employee.name,
             Job_Title=data.get('job_title', 'TBD'),
@@ -199,6 +183,7 @@ def create_contract(contract_type_id, employee_id):
         )
     except KeyError as e:
         return jsonify({'error': f'Missing or incorrect data for contract template: {e}'}), 400
+    formatted_content = formatted_content.replace("[Start Date]", employee.start_date)
 
     # Create the contract
     new_contract = FinalContract(
@@ -207,6 +192,7 @@ def create_contract(contract_type_id, employee_id):
         contract_type_id=contract_type.id,
         content=formatted_content
     )
+    print(formatted_content)
 
     employee.has_contract = True
     db.session.add(new_contract)
