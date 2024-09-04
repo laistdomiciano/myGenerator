@@ -73,9 +73,10 @@ def signup():
 def create_employee():
     data = request.get_json()
 
-    required_fields = ['name', 'position', 'department', 'start_date', 'job_title', 'salary', 'benefits', 'work_hours',
-                       'leave_days', 'notice_period', 'hourly_rate', 'number_of_hours', 'description_of_services',
-                       'fee_amount', 'payment_schedule', 'ownership_terms']
+    required_fields = ['employee_name', 'company_name', 'start_date', 'job_title', 'job_responsibilities',
+        'salary', 'benefits', 'work_hours', 'leave_days', 'notice_period', 'hourly_rate', 'number_of_hours',
+        'description_of_services', 'fee_amount', 'payment_schedule', 'ownership_terms', 'company_representative', 'client_representative'
+    ]
 
     for field in required_fields:
         if field not in data:
@@ -84,11 +85,11 @@ def create_employee():
     # Extract data
     try:
         new_employee = Employee(
-            name=data['name'],
-            position=data['position'],
-            department=data['department'],
+            employee_name=data['employee_name'],
+            company_name=data['company_name'],
             start_date=data['start_date'],
             job_title=data['job_title'],
+            job_responsibilities=data['job_responsibilities'],
             salary=data['salary'],
             benefits=data['benefits'],
             work_hours=data['work_hours'],
@@ -100,7 +101,9 @@ def create_employee():
             fee_amount=data['fee_amount'],
             payment_schedule=data['payment_schedule'],
             ownership_terms=data['ownership_terms'],
-            has_contract=data.get('has_contract', False)  # Default to False if not provided
+            company_representative=['company_representative'],
+            client_representative=['client_representative'],
+            has_contract=data.get('has_contract', False)
         )
 
         db.session.add(new_employee)
@@ -188,12 +191,12 @@ def create_contract(contract_type_id, employee_id):
 
     try:
         formatted_content = contract_type.template.format(
+            Employee_Name=employee.employee_name,
             Start_Date=employee.start_date,
             Company_Name=employee.company_name,
-            Employee_Name=employee.name,
             Job_Title=employee.job_title,
             Job_Responsibilities=employee.job_responsibilities,
-            Salary_Amount=employee.salary_amount,
+            Salary=employee.salary,
             List_of_Benefits=employee.benefits,
             Work_Hours=employee.work_hours,
             Leave_Days=employee.leave_days,
@@ -203,7 +206,9 @@ def create_contract(contract_type_id, employee_id):
             Description_of_Services=employee.description_of_services,
             Fee_Amount=employee.fee_amount,
             Payment_Schedule=employee.payment_schedule,
-            Ownership_Terms=employee.ownership_terms
+            Ownership_Terms=employee.ownership_terms,
+            Company_Representative=employee.company_representative,
+            Client_Representative=employee.client_representative
         )
     except KeyError as e:
         return jsonify({'error': f'Missing or incorrect data for contract template: {e}'}), 400

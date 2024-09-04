@@ -80,7 +80,7 @@ def seed():
                     'template': """
              FREELANCE EMPLOYMENT CONTRACT
 
-             This Freelance Contract ("Contract") is made effective as of [Start Date], by and between [Company Name] ("Client") and [Freelancer Name] ("Freelancer").
+             This Freelance Contract ("Contract") is made effective as of [Start Date], by and between [Company Name] ("Client") and [Employee Name] ("Freelancer").
 
              Services
              Freelancer agrees to perform the following services for Client: [Description of Services].
