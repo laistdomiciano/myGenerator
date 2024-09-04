@@ -27,6 +27,12 @@ class Employee(db.Model):
     work_hours = db.Column(db.String(50))
     leave_days = db.Column(db.Integer)
     notice_period = db.Column(db.String(50))
+    hourly_rate = db.Column(db.Float)
+    number_of_hours = db.Column(db.Float)
+    description_of_services = db.Column(db.Text)
+    fee_amount = db.Column(db.Float)
+    payment_schedule = db.Column(db.String(100))
+    ownership_terms = db.Column(db.Text)
     has_contract = db.Column(db.Boolean, default=False)
 
     # Relationship to FinalContract, using backref for reverse access
@@ -45,6 +51,12 @@ class Employee(db.Model):
             "work_hours": self.work_hours,
             "leave_days": int(self.leave_days) if self.leave_days else None,
             "notice_period": self.notice_period,
+            "hourly_rate": self.hourly_rate,
+            "number_of_hours": int(self.number_of_hours),
+            "description_of_services": self.description_of_services,
+            "fee_amount": float(self.fee_amount),
+            "payment_schedule": self.payment_schedule,
+            "ownership_terms": self.ownership_terms,
             "has_contract": bool(self.has_contract)
         }
 

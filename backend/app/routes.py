@@ -183,7 +183,24 @@ def create_contract(contract_type_id, employee_id):
         )
     except KeyError as e:
         return jsonify({'error': f'Missing or incorrect data for contract template: {e}'}), 400
-    formatted_content = formatted_content.replace("[Start Date]", employee.start_date)
+
+    formatted_content = (formatted_content.replace("[Start Date]", employee.start_date),
+                         formatted_content.replace("[Start Date]", employee.company_name),
+                         formatted_content.replace("[Company_Name]", employee.company_name),
+                         formatted_content.replace("[Employee_Name]", employee.name),
+                         formatted_content.replace("[Job_Title]", employee.get),
+                         formatted_content.replace("[Job_Responsibilities]", employee.job_responsibilities),
+                         formatted_content.replace("[Salary_Amount]", employee.salary_amount),
+                         formatted_content.replace("[List_of_Benefits]", employee.benefits),
+                         formatted_content.replace("[Work_Hours]", employee.work_hours),
+                         formatted_content.replace("[Leave_Days]", employee.leave_days),
+                         formatted_content.replace("[Notice_Period]", employee.notice_period),
+                         formatted_content.replace("[Hourly_Rate]", employee.hourly_rate),
+                         formatted_content.replace("[Number_of_Hours]", employee.number_of_hours),
+                         formatted_content.replace("[Description_of_Services]", employee.description_of_services),
+                         formatted_content.replace("[Fee_Amount]", employee.fee_amount),
+                         formatted_content.replace("[Payment_Schedule]", employee.payment_schedule),
+                         formatted_content.replace("[Ownership_Terms]", employee.ownership_terms)
 
     # Create the contract
     new_contract = FinalContract(
