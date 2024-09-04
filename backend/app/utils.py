@@ -1,11 +1,15 @@
+from dotenv import load_dotenv
 from fpdf import FPDF
 from datetime import datetime
 import boto3
+import os
+
+load_dotenv()
 
 AWS_S3_BUCKET_NAME = 'pdfcontracts'
 AWS_REGION = 'eu-north-1'
-AWS_ACCESS_KEY = 'AKIA47GB7XA3S6JV4VAA'
-AWS_SECRET_KEY = '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'
+AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
+AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 
 
 # def validate_signup(data):
