@@ -165,21 +165,21 @@ def create_contract(contract_type_id, employee_id):
     try:
         formatted_content = contract_type.template.format(
             Start_Date=employee.start_date,
-            Company_Name=data.get('company_name', 'TBD'),
+            Company_Name=employee.company_name,,
             Employee_Name=employee.name,
-            Job_Title=data.get('job_title', 'TBD'),
-            Job_Responsibilities=data.get('job_responsibilities', 'TBD'),
-            Salary_Amount=data.get('salary_amount', 'TBD'),
-            List_of_Benefits=data.get('benefits', 'TBD'),
-            Work_Hours=data.get('work_hours', 'TBD'),
-            Leave_Days=data.get('leave_days', 'TBD'),
-            Notice_Period=data.get('notice_period', 'TBD'),
-            Hourly_Rate=data.get('hourly_rate', 'TBD'),
-            Number_of_Hours=data.get('number_of_hours', 'TBD'),
-            Description_of_Services=data.get('description_of_services', 'TBD'),
-            Fee_Amount=data.get('fee_amount', 'TBD'),
-            Payment_Schedule=data.get('payment_schedule', 'TBD'),
-            Ownership_Terms=data.get('ownership_terms', 'TBD')
+            Job_Title=employee.get,,
+            Job_Responsibilities=employee.get,,
+            Salary_Amount=employee.get,,
+            List_of_Benefits=employee.get,,
+            Work_Hours=employee.get,
+            Leave_Days=employee.get,
+            Notice_Period=employee.get,
+            Hourly_Rate=employee.get,
+            Number_of_Hours=employee.get,
+            Description_of_Services=employee.get,
+            Fee_Amount=employee.get,
+            Payment_Schedule=employee.get,
+            Ownership_Terms=employee.get
         )
     except KeyError as e:
         return jsonify({'error': f'Missing or incorrect data for contract template: {e}'}), 400

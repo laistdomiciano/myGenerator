@@ -12,14 +12,6 @@ AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
 AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 
 
-# def validate_signup(data):
-#     if not data['name'] or not data['email'] or not data['username']:
-#         return "Missing required fields"
-#     if data['password1'] != data['password2']:
-#         return "Passwords do not match"
-#     return None
-
-
 def generate_pdf(contract_content, contract_id, employee_name):
     pdf = FPDF()
     pdf.add_page()
@@ -34,7 +26,7 @@ def generate_pdf(contract_content, contract_id, employee_name):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     filename = f"contract_{employee_name}_{contract_id}_{timestamp}.pdf"
-    pdf_output_path = f"/tmp/{filename}"  # Storing temporarily, can be modified based on your environment
+    pdf_output_path = f"/tmp/{filename}"
 
     pdf.output(pdf_output_path)
 
@@ -49,16 +41,6 @@ def connect_aws():
     )
     s3 = session.resource('s3')
     return s3
-
-
-# def upload_to_s3(file_path, s3_filename):
-#     s3 = connect_aws()
-#     bucket = s3.Bucket(AWS_S3_BUCKET_NAME)
-#     try:
-#         bucket.upload_file(file_path, s3_filename)
-#         return f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com/{s3_filename}"
-#     except Exception as e:
-#         return str(e)
 
 
 def upload_to_s3(file_path, s3_filename):
