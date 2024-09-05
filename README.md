@@ -1,15 +1,16 @@
 # Employment Contract Generator API
 
-## Overview
+## Overview:
 The Employment Contract Generator is a Flask-based API designed to streamline the process of creating employment contracts for different job roles. This application allows users to generate customized contracts by selecting from pre-defined templates for Full-Time, Part-Time, or Freelance employment agreements. The generated contracts are personalized based on user input and can be downloaded in PDF format.
 
 The API is built with a focus on secure authentication, data management, and ease of contract generation. It integrates with PostgreSQL for data storage, employs JWT (JSON Web Tokens) for secure user authentication, and utilizes AWS S3 for storing and retrieving generated contract PDFs.
 
 ## Key Features:
+
 ### User Authentication: 
 Users can register, log in, and receive JWT tokens for accessing secure endpoints.
-### 
-Contract Generation: Provides three contract templates (Full-Time, Part-Time, and Freelance). These templates are dynamically populated based on input from the user.
+### Contract Generation: 
+Provides three contract templates (Full-Time, Part-Time, and Freelance). These templates are dynamically populated based on input from the user.
 ### PDF Export: 
 After generating the contract, users can download the contract as a PDF document, which is also stored in AWS S3.
 ### User & Employee Management: 
@@ -24,27 +25,27 @@ Built-in support for database migration using Flask-Migrate to handle schema cha
 Configured to handle cross-origin requests securely, allowing integration with various front-end clients.
 
 ## Detailed Functionality:
-User Registration & Login:
 
+### User Registration & Login:
 Users sign up and provide their name, email, username, and password. The passwords are securely hashed and stored in the database.
 After registration, users can log in and receive a JWT token. This token is required for accessing protected routes like contract generation and employee management.
-Employee Management:
 
+### Employee Management:
 Users can create employee profiles by providing details such as the employee's name, position, department, job responsibilities, salary, and benefits.
 Employees are linked to contracts, and the system tracks whether an employee has an active contract.
-Contract Templates:
 
+### Contract Templates:
 The system comes with three pre-configured contract templates: Full-Time, Part-Time, and Freelance. These templates contain placeholders for essential information such as job title, salary, work hours, and company details.
 Users can select a template, fill out required details, and generate a contract tailored to the employee’s role.
-Contract Creation & PDF Generation:
 
+### Contract Creation & PDF Generation:
 The API generates contracts using the selected template and the provided data. After generation, a PDF version of the contract is created.
 The generated PDF is uploaded to AWS S3 for persistent storage and is accessible via a public URL. The API returns this URL, allowing users to download or share the document.
-Secure Access with JWT:
 
+### Secure Access with JWT:
 JWT is used to authenticate users, ensuring that sensitive operations (like contract creation) are only accessible to logged-in users. This enhances the security of the platform.
-Database & Storage:
 
+### Database & Storage:
 The application uses PostgreSQL as the database to store user information, employees, contract types, and generated contracts.
 All generated PDFs are stored in an AWS S3 bucket, ensuring they are safely stored and easily retrievable.
 This application is designed to be highly scalable, allowing businesses to manage employees and their contracts efficiently. It integrates various technologies like Flask, PostgreSQL, AWS S3, and JWT for a robust and secure user experience.
