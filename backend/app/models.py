@@ -18,11 +18,10 @@ class User(db.Model, UserMixin):
 class Employee(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     employee_name = db.Column(db.String(150))
-    position = db.Column(db.String(150))
-    department = db.Column(db.String(100))
     start_date = db.Column(db.String(100))
     company_name = db.Column(db.String(100))
     job_title = db.Column(db.String(150))
+    job_responsibilities = db.Column(db.String(255))
     salary = db.Column(db.Float)
     benefits = db.Column(db.String(255))
     work_hours = db.Column(db.String(50))
@@ -45,10 +44,10 @@ class Employee(db.Model):
         return {
             "id": self.id,
             "employee_name": self.employee_name,
-            "position": self.position,
-            "department": self.department,
+            "company_name": self.company_name,
             "start_date": self.start_date,
             "job_title": self.job_title,
+            "job_responsibilities": self.job_responsibilities,
             "salary": float(self.salary),
             "benefits": self.benefits,
             "work_hours": self.work_hours,

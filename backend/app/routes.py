@@ -101,14 +101,14 @@ def create_employee():
             fee_amount=data['fee_amount'],
             payment_schedule=data['payment_schedule'],
             ownership_terms=data['ownership_terms'],
-            company_representative=['company_representative'],
-            client_representative=['client_representative'],
+            company_representative=data['company_representative'],
+            client_representative=data['client_representative'],
             has_contract=data.get('has_contract', False)
         )
 
         db.session.add(new_employee)
         db.session.commit()
-        return jsonify(success=True, message=f"New employee {data['name']} successfully registered."), 201
+        return jsonify(success=True, message=f"New employee {data['employee_name']} successfully registered."), 201
 
     except IntegrityError:
         db.session.rollback()
