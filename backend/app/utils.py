@@ -47,7 +47,8 @@ def upload_to_s3(file_path, s3_filename):
     s3 = connect_aws()
     bucket = s3.Bucket(AWS_S3_BUCKET_NAME)
     try:
-        bucket.upload_file(file_path, s3_filename, ExtraArgs={'ACL': 'public-read'})
+        bucket.upload_file(file_path, s3_filename)
         return f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com/{s3_filename}"
     except Exception as e:
         return str(e)
+

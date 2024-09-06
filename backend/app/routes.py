@@ -174,21 +174,22 @@ def employees_wo_contract():
     return jsonify(employees_list), 200
 
 
-
 @routes.route('/create_contract/<int:contract_type_id>/<int:employee_id>', methods=['POST'])
 @jwt_required()
 def create_contract(contract_type_id, employee_id):
-    user_id = get_jwt_identity()
-    data = request.get_json()
+    user_id = get_jwt_identity()  # Retrieve the logged-in user's ID
 
+    # Fetch the contract type
     contract_type = ContractType.query.get(contract_type_id)
     if not contract_type:
         return jsonify({'error': 'Invalid contract type.'}), 404
 
+    # Fetch the employee
     employee = Employee.query.get(employee_id)
     if not employee:
         return jsonify({'error': 'Invalid employee ID.'}), 404
 
+    # Create a mapping of placeholders to actual employee data
     try:
         formatted_content = contract_type.template.format(
             Employee_Name=employee.employee_name,
@@ -213,21 +214,23 @@ def create_contract(contract_type_id, employee_id):
     except KeyError as e:
         return jsonify({'error': f'Missing or incorrect data for contract template: {e}'}), 400
 
-    # Assume `Contract` is a model class that you need to use to create a new contract record
+    # Create a new contract record
     new_contract = FinalContract(
-        contract_type_id=contract_type_id,
+        user_id=user_id,  # Assign the logged-in user's ID
         employee_id=employee_id,
-        content=formatted_content
+        contract_type_id=contract_type_id,
+        content=formatted_content  # Add the formatted content here
     )
 
+    # Mark the employee as having a contract
     employee.has_contract = True
     db.session.add(new_contract)
     db.session.commit()
 
-    # Generate PDF
-    pdf_path, pdf_filename = generate_pdf(formatted_content, new_contract.id, employee.name)
+    # Generate PDF from the formatted content
+    pdf_path, pdf_filename = generate_pdf(formatted_content, new_contract.id, employee.employee_name)
 
-    # Upload PDF to S3
+    # Upload PDF to S3 and get the public URL
     s3_url = upload_to_s3(pdf_path, pdf_filename)
 
     # Cleanup temporary file
