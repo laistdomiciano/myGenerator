@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from models import User, Employee, ContractType, FinalContract, db
 from utils import generate_pdf, upload_to_s3
 import os
+import uuid
 
 routes = Blueprint('routes', __name__)
 
@@ -174,93 +175,30 @@ def employees_wo_contract():
     return jsonify(employees_list), 200
 
 
-@routes.route('/create_contract/<int:contract_type_id>/<int:employee_id>', methods=['POST'])
-@jwt_required()
-def create_contract(contract_type_id, employee_id):
-    user_id = get_jwt_identity()  # Retrieve the logged-in user's ID
-
-    # Fetch the contract type
-    contract_type = ContractType.query.get(contract_type_id)
-    if not contract_type:
-        return jsonify({'error': 'Invalid contract type.'}), 404
-
-    # Fetch the employee
-    employee = Employee.query.get(employee_id)
-    if not employee:
-        return jsonify({'error': 'Invalid employee ID.'}), 404
-
-    # Create a mapping of placeholders to actual employee data
-    try:
-        formatted_content = contract_type.template.format(
-            Employee_Name=employee.employee_name,
-            Start_Date=employee.start_date,
-            Company_Name=employee.company_name,
-            Job_Title=employee.job_title,
-            Job_Responsibilities=employee.job_responsibilities,
-            Salary=employee.salary,
-            List_of_Benefits=employee.benefits,
-            Work_Hours=employee.work_hours,
-            Leave_Days=employee.leave_days,
-            Notice_Period=employee.notice_period,
-            Hourly_Rate=employee.hourly_rate,
-            Number_of_Hours=employee.number_of_hours,
-            Description_of_Services=employee.description_of_services,
-            Fee_Amount=employee.fee_amount,
-            Payment_Schedule=employee.payment_schedule,
-            Ownership_Terms=employee.ownership_terms,
-            Company_Representative=employee.company_representative,
-            Client_Representative=employee.client_representative
-        )
-    except KeyError as e:
-        return jsonify({'error': f'Missing or incorrect data for contract template: {e}'}), 400
-
-    # Create a new contract record
-    new_contract = FinalContract(
-        user_id=user_id,  # Assign the logged-in user's ID
-        employee_id=employee_id,
-        contract_type_id=contract_type_id,
-        content=formatted_content  # Add the formatted content here
-    )
-
-    # Mark the employee as having a contract
-    employee.has_contract = True
-    db.session.add(new_contract)
-    db.session.commit()
-
-    # Generate PDF from the formatted content
-    pdf_path, pdf_filename = generate_pdf(formatted_content, new_contract.id, employee.employee_name)
-
-    # Upload PDF to S3 and get the public URL
-    s3_url = upload_to_s3(pdf_path, pdf_filename)
-
-    # Cleanup temporary file
-    os.remove(pdf_path)
-
-    return jsonify({'message': 'Contract created successfully.', 'contract_id': new_contract.id, 'pdf_url': s3_url}), 201
-
-
 # @routes.route('/create_contract/<int:contract_type_id>/<int:employee_id>', methods=['POST'])
 # @jwt_required()
 # def create_contract(contract_type_id, employee_id):
-#     user_id = get_jwt_identity()
-#     data = request.get_json()
+#     user_id = get_jwt_identity()  # Retrieve the logged-in user's ID
 #
+#     # Fetch the contract type
 #     contract_type = ContractType.query.get(contract_type_id)
 #     if not contract_type:
 #         return jsonify({'error': 'Invalid contract type.'}), 404
 #
+#     # Fetch the employee
 #     employee = Employee.query.get(employee_id)
 #     if not employee:
 #         return jsonify({'error': 'Invalid employee ID.'}), 404
 #
+#     # Create a mapping of placeholders to actual employee data
 #     try:
-#         formatted_content = contract_type.template.format(
+#         formatted_content = contract_type.template.replace(
+#             Employee_Name=employee.employee_name,
 #             Start_Date=employee.start_date,
 #             Company_Name=employee.company_name,
-#             Employee_Name=employee.name,
-#             Job_Title=employee.get,
+#             Job_Title=employee.job_title,
 #             Job_Responsibilities=employee.job_responsibilities,
-#             Salary_Amount=employee.salary_amount,
+#             Salary=employee.salary,
 #             List_of_Benefits=employee.benefits,
 #             Work_Hours=employee.work_hours,
 #             Leave_Days=employee.leave_days,
@@ -270,43 +208,99 @@ def create_contract(contract_type_id, employee_id):
 #             Description_of_Services=employee.description_of_services,
 #             Fee_Amount=employee.fee_amount,
 #             Payment_Schedule=employee.payment_schedule,
-#             Ownership_Terms=employee.ownership_terms
+#             Ownership_Terms=employee.ownership_terms,
+#             Company_Representative=employee.company_representative,
+#             Client_Representative=employee.client_representative
 #         )
 #     except KeyError as e:
 #         return jsonify({'error': f'Missing or incorrect data for contract template: {e}'}), 400
 #
-#     final_contract = (formatted_content.replace("[Start Date]", employee.start_date).
-#                     replace("[Start Date]", employee.company_name),
-#                          formatted_content.replace("[Company_Name]", employee.company_name),
-#                          formatted_content.replace("[Employee_Name]", employee.name),
-#                          formatted_content.replace("[Job_Title]", employee.get),
-#                          formatted_content.replace("[Job_Responsibilities]", employee.job_responsibilities),
-#                          formatted_content.replace("[Salary_Amount]", employee.salary_amount),
-#                          formatted_content.replace("[List_of_Benefits]", employee.benefits),
-#                          formatted_content.replace("[Work_Hours]", employee.work_hours),
-#                          formatted_content.replace("[Leave_Days]", employee.leave_days),
-#                          formatted_content.replace("[Notice_Period]", employee.notice_period),
-#                          formatted_content.replace("[Hourly_Rate]", employee.hourly_rate),
-#                          formatted_content.replace("[Number_of_Hours]", employee.number_of_hours),
-#                          formatted_content.replace("[Description_of_Services]", employee.description_of_services),
-#                          formatted_content.replace("[Fee_Amount]", employee.fee_amount),
-#                          formatted_content.replace("[Payment_Schedule]", employee.payment_schedule),
-#                          formatted_content.replace("[Ownership_Terms]", employee.ownership_terms)
+#     # Create a new contract record
+#     new_contract = FinalContract(
+#         user_id=user_id,  # Assign the logged-in user's ID
+#         employee_id=employee_id,
+#         contract_type_id=contract_type_id,
+#         content=formatted_content  # Add the formatted content here
+#     )
 #
+#     # Mark the employee as having a contract
 #     employee.has_contract = True
-#     db.session.add(final_contract)
+#     db.session.add(new_contract)
 #     db.session.commit()
 #
-#     # Generate PDF
-#     pdf_path, pdf_filename = generate_pdf(formatted_content, new_contract.id, employee.name)
+#     # Generate PDF from the formatted content
+#     pdf_path, pdf_filename = generate_pdf(formatted_content, new_contract.id, employee.employee_name)
 #
-#     # Upload PDF to S3
+#     # Upload PDF to S3 and get the public URL
 #     s3_url = upload_to_s3(pdf_path, pdf_filename)
 #
 #     # Cleanup temporary file
 #     os.remove(pdf_path)
 #
-#     return jsonify({'message': 'Contract created successfully.', 'contract_id': final_contract.id, 'pdf_url': s3_url}), 201
+#     return jsonify({'message': 'Contract created successfully.', 'contract_id': new_contract.id, 'pdf_url': s3_url}), 201
+
+
+@routes.route('/create_contract/<int:contract_type_id>/<int:employee_id>', methods=['POST'])
+@jwt_required()
+def create_contract(contract_type_id, employee_id):
+    user_id = get_jwt_identity()  # Get the user_id from the JWT
+
+    contract_type = ContractType.query.get(contract_type_id)
+    if not contract_type:
+        return jsonify({'error': 'Invalid contract type.'}), 404
+
+    employee = Employee.query.get(employee_id)
+    if not employee:
+        return jsonify({'error': 'Invalid employee ID.'}), 404
+    print(employee.employee_name)
+
+    try:
+        formatted_content = contract_type.template \
+            .replace("{Employee Name}", employee.employee_name) \
+            .replace("{Start Date}", employee.start_date) \
+            .replace("{Company Name}", employee.company_name) \
+            .replace("{Job Title}", employee.job_title) \
+            .replace("{Job Responsibilities}", employee.job_responsibilities) \
+            .replace("{Salary Amount}", str(employee.salary)) \
+            .replace("{List of Benefits}", employee.benefits) \
+            .replace("{Work Hours}", str(employee.work_hours)) \
+            .replace("{Leave Days}", str(employee.leave_days)) \
+            .replace("{Notice Period}", employee.notice_period) \
+            .replace("{Hourly Rate}", str(employee.hourly_rate)) \
+            .replace("{Number of Hours}", str(employee.number_of_hours)) \
+            .replace("{Description of Services}", employee.description_of_services) \
+            .replace("{Fee Amount}", str(employee.fee_amount)) \
+            .replace("{Payment Schedule}", employee.payment_schedule) \
+            .replace("{Ownership Terms}", employee.ownership_terms) \
+            .replace("{Company Representative}", employee.company_representative) \
+            .replace("{Client Representative}", employee.client_representative)
+
+    except KeyError as e:
+        return jsonify({'error': f'Missing or incorrect data for contract template: {e}'}), 400
+
+    # Generate PDF
+    pdf_path, pdf_filename = generate_pdf(formatted_content, uuid.uuid4(), employee.employee_name)
+
+    # Upload PDF to S3
+    s3_url = upload_to_s3(pdf_path, pdf_filename)
+
+    # Create the contract object, now with the user_id
+    new_contract = FinalContract(
+        user_id=user_id,  # Pass the user_id here
+        employee_id=employee.id,
+        contract_type_id=contract_type.id,
+        content=s3_url
+    )
+
+    employee.has_contract = True
+    db.session.add(new_contract)
+    db.session.commit()
+
+    # Cleanup temporary file
+    os.remove(pdf_path)
+
+    return jsonify(
+        {'message': 'Contract created successfully.', 'contract_id': new_contract.id, 'pdf_url': s3_url}), 201
 
 
 @routes.route('/update_employee/<int:user_id>', methods=['PUT'])
