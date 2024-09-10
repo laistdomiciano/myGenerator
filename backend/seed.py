@@ -76,7 +76,7 @@ def seed():
                 },
                 {
                     'name': 'Freelance',
-                    'template': """
+                    'template': f"""
                      FREELANCE EMPLOYMENT CONTRACT
 
                      This Freelance Contract ("Contract") is made effective as of {Start Date}, by and between {Company Name} ("Client") and {Employee Name} ("Freelancer").
@@ -104,7 +104,7 @@ def seed():
 
                      Signed,
                      {Client Representative}
-                     {Freelancer Name}
+                     {Employee Name}
                      """
                 }
             ]

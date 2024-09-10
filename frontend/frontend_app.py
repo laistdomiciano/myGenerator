@@ -1,79 +1,86 @@
-from flask import request, session, Flask, render_template, redirect, url_for
-from flask_login import LoginManager, login_required, current_user
-from backend.app.models import User
+from flask import Flask, request, session, render_template, redirect, url_for, jsonify
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from werkzeug.security import check_password_hash
+import requests
+import os
 
-myapp = Flask(__name__, template_folder='public')
+app = Flask(__name__, template_folder='public', static_folder='static')
 
-# Set up the LoginManager
+
 login_manager = LoginManager()
-login_manager.init_app(myapp)
+login_manager.init_app(app)
 login_manager.login_view = 'login'
-myapp.secret_key = 'your-secret-key-here'
+app.secret_key = os.environ.get('FRONTEND_SECRET_KEY', 'your-frontend-secret-key')
+
+
+BACKEND_API_URL = os.environ.get('BACKEND_API_URL', 'http://localhost:5002')
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return None
 
-@myapp.route('/')
+@app.route('/')
 def home():
     return render_template('home.html')
 
-@myapp.route('/signup', methods=['GET', 'POST'])
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        data = request.form
-        name = data['name']
-        email = data['email']
-        username = data['username']
-        password1 = data['password1']
-        password2 = data['password2']
+        data = {
+            'name': request.form.get('name'),
+            'email': request.form.get('email'),
+            'username': request.form.get('username'),
+            'password1': request.form.get('password1'),
+            'password2': request.form.get('password2')
+        }
 
-        if password1 != password2:
-            return render_template('signup.html', error="Passwords do not match.")
+        response = requests.post(f"{BACKEND_API_URL}/signup", json=data)
+        result = response.json()
 
-        hashed_password = generate_password_hash(password1, method='sha256')
-
-        new_user = User(name=name, email=email, username=username, password=hashed_password)
-
-        try:
-            db.session.add(new_user)
-            db.session.commit()
+        if response.status_code == 200 and result.get('success'):
             return redirect(url_for('login'))
-        except IntegrityError:
-            db.session.rollback()
-            return render_template('signup.html', error="Username or email already exists.")
+        else:
+            error = result.get('error', 'An error occurred during signup.')
+            return render_template('signup.html', error=error)
 
     return render_template('signup.html')
 
-@myapp.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        data = request.form
-        username = data['username']
-        password = data['password']
+        data = {
+            'username': request.form.get('username'),
+            'password': request.form.get('password')
+        }
 
-        user = User.query.filter_by(username=username).first()
-        if user and check_password_hash(user.password, password):
-            access_token = create_jwt_token(user.id)
-            session['access_token'] = access_token
-            login_user(user)
+        response = requests.post(f"{BACKEND_API_URL}/login", json=data)
+        result = response.json()
+
+        if response.status_code == 200 and 'token' in result:
+            session['access_token'] = result['token']
+            session['user'] = result['user']
             return redirect(url_for('dashboard'))
-        return render_template('login.html', error="Invalid credentials.")
+        else:
+            error = result.get('error', 'Invalid credentials.')
+            return render_template('login.html', error=error)
 
     return render_template('login.html')
 
-@myapp.route('/logout')
+@app.route('/logout')
+@login_required
 def logout():
     session.pop('access_token', None)
+    session.pop('user', None)
     logout_user()
     return redirect(url_for('login'))
 
-@myapp.route('/dashboard')
+@app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template('dashboard.html', user=session.get('user'))
 
 if __name__ == "__main__":
-    myapp.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=True)
+
 
 

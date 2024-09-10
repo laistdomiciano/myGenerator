@@ -1,95 +1,83 @@
+// frontend/static/js/scripts.js
+
 document.addEventListener("DOMContentLoaded", function () {
-    // Handle login form submission
-    handleLoginForm();
+    // Initialize Bootstrap tooltips if needed
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
 
-    // Handle signup form submission
-    handleSignupForm();
+    // Handle form validations
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
 
-    // Handle contract link clicks
-    handleContractLinks();
-});
-
-function handleLoginForm() {
-    const loginForm = document.querySelector(".login-container form");
-
-    if (loginForm) {
-        loginForm.addEventListener("submit", function (event) {
-            event.preventDefault(); // Prevent the default form submission
-
-            const formData = new FormData(loginForm);
-
-            fetch("/login", {
-                method: "POST",
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = "/dashboard"; // Redirect to dashboard on successful login
-                } else {
-                    const loginMessage = document.getElementById("login-message");
-                    if (loginMessage) {
-                        loginMessage.textContent = data.error; // Display error message
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
                     }
-                }
+                    form.classList.add('was-validated')
+                }, false)
             })
-            .catch(error => console.error("Error:", error));
-        });
-    }
+    })()
+
+    // Handle contract generation
+    handleContractGeneration()
+})
+
+function handleContractGeneration() {
+    const contractItems = document.querySelectorAll('.dropdown-item[data-type]')
+    const contractModal = new bootstrap.Modal(document.getElementById('contractModal'))
+    const contractTypeName = document.getElementById('contractTypeName')
+    const confirmGenerateBtn = document.getElementById('confirmGenerate')
+
+    let selectedType = ''
+
+    contractItems.forEach(item => {
+        item.addEventListener('click', function (event) {
+            event.preventDefault()
+            selectedType = this.getAttribute('data-type')
+            const typeText = this.textContent
+            contractTypeName.textContent = typeText
+            contractModal.show()
+        })
+    })
+
+    confirmGenerateBtn.addEventListener('click', function () {
+        if (selectedType) {
+            generateContract(selectedType)
+            contractModal.hide()
+        }
+    })
 }
 
-function handleSignupForm() {
-    const signupForm = document.querySelector(".signup-container form");
+function generateContract(contractType) {
+    const token = getToken()
 
-    if (signupForm) {
-        signupForm.addEventListener("submit", function (event) {
-            event.preventDefault(); // Prevent the default form submission
-
-            const formData = new FormData(signupForm);
-
-            fetch("/signup", {
-                method: "POST",
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = "/login"; // Redirect to login on successful signup
-                } else {
-                    const signupMessage = document.getElementById("signup-message");
-                    if (signupMessage) {
-                        signupMessage.textContent = data.error; // Display error message
-                    }
-                }
-            })
-            .catch(error => console.error("Error:", error));
-        });
-    }
+    fetch(`${BACKEND_API_URL}/create_contract`, {  // Ensure BACKEND_API_URL is defined
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ type: contractType })  // Adjust based on backend requirements
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message or redirect
+            alert("Contract created successfully! You can download it from your contracts section.")
+            // Optionally, redirect to contracts page
+        } else {
+            alert("Failed to create contract: " + data.error)
+        }
+    })
+    .catch(error => console.error("Error:", error))
 }
 
-function handleContractLinks() {
-    const contractLinks = document.querySelectorAll(".contract-link");
-
-    if (contractLinks) {
-        contractLinks.forEach(link => {
-            link.addEventListener("click", function (event) {
-                event.preventDefault(); // Prevent the default link navigation
-
-                const contractType = this.getAttribute("href").split("=")[1];
-
-                fetch(`/create_contract?type=${contractType}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert("Contract created successfully!"); // Display success message
-                            // Optionally, you can redirect the user or show a modal with contract details here
-                        } else {
-                            alert("Failed to create contract: " + data.error); // Display error message
-                        }
-                    })
-                    .catch(error => console.error("Error:", error));
-            });
-        });
-    }
+function getToken() {
+    return sessionStorage.getItem('access_token') || null
 }
-

@@ -1,0 +1,39 @@
+name: CI
+
+# Trigger workflow on push to any branch or pull request
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+# Define jobs to run
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # Steps of the job
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3  # Check out the code from the repository
+
+    - name: Set up Node.js (or Python, Ruby, etc.)
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm test
+
+    - name: Run linting
+      run: npm run lint
+
+    - name: Build the project
+      run: npm run build

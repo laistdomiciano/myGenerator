@@ -1,3 +1,4 @@
+from flask_swagger_ui import get_swaggerui_blueprint
 import os
 import psycopg2
 from flask import Flask
@@ -41,7 +42,7 @@ def load_user(user_id):
 def create_app():
     create_database()
 
-    myapp = Flask(__name__)
+    myapp = Flask(__name__, static_folder='static')
     CORS(myapp)
 
     myapp.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mysupersecretkey')
@@ -57,9 +58,19 @@ def create_app():
 
     myapp.register_blueprint(routes, url_prefix='/')
 
+    SWAGGER_URL = '/swagger'
+    API_URL = '/static/swagger.yaml'
+    swaggerui_blueprint = get_swaggerui_blueprint(
+        SWAGGER_URL,
+        API_URL,
+        config={
+            'app_name': "EC-Generator"
+        }
+    )
+    myapp.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
     with myapp.app_context():
         db.create_all()
-        print('All tables created successfully!')
 
     return myapp
 

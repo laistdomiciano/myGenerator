@@ -6,3 +6,10 @@ psycopg2-binary==2.9.5
 Werkzeug==2.2.3
 SQLAlchemy==1.4.47
 FPDF==1.7.2
+pytest
+python-dotenv
+flask_login
+boto3
+flask_cors
+flask-swagger-ui
+flask-swagger
