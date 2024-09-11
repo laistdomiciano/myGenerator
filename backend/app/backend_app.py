@@ -15,10 +15,10 @@ jwt = JWTManager()
 def create_database():
     try:
         conn = psycopg2.connect(
-            host='localhost',
+            host=os.environ.get('SERVER', 'mygeneratordb.cv86uy0q8cze.eu-north-1.rds.amazonaws.com'),
             port=5432,
             user=os.environ.get('DB_USER', 'postgres'),
-            password=os.environ.get('DB_PASSWORD', '2206')
+            password=os.environ.get('DB_PASSWORD', 'Simbera22')
         )
         conn.autocommit = True
         cur = conn.cursor()
@@ -46,9 +46,15 @@ def create_app():
     CORS(myapp)
 
     myapp.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mysupersecretkey')
+
+    host = os.environ.get('SERVER', 'mygeneratordb.cv86uy0q8cze.eu-north-1.rds.amazonaws.com')
+    port = 5432
+    user = os.environ.get('DB_USER', 'postgres')
+    password = os.environ.get('DB_PASSWORD', 'Simbera22')
+
     myapp.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
         'DATABASE_URL',
-        f'postgresql://postgres:2206@localhost:5432/{DB_NAME}'
+        f'postgresql://{user}:{password}@{host}:{port}/{DB_NAME}'
     )
     myapp.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
