@@ -1,10 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "home.html" %}
 
-</body>
-</html>
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h2>Welcome, {{ user.username }}</h2>
+            <p class="lead">What would you like to do today?</p>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-6">
+            <div class="list-group">
+                <a href="{{ url_for('create_employee') }}" class="list-group-item list-group-item-action">
+                    <h5 class="mb-1">Create Employee</h5>
+                    <p class="mb-1">Register a new employee in the system.</p>
+                </a>
+                <a href="{{ url_for('create_contract') }}" class="list-group-item list-group-item-action">
+                    <h5 class="mb-1">Create Contract</h5>
+                    <p class="mb-1">Generate an employment contract for an existing employee.</p>
+                </a>
+                <a href="{{ url_for('update_user', user_id=user.id) }}" class="list-group-item list-group-item-action">
+                    <h5 class="mb-1">Update Profile</h5>
+                    <p class="mb-1">Update your user profile and credentials.</p>
+                </a>
+                <a href="{{ url_for('logout') }}" class="list-group-item list-group-item-action list-group-item-danger">
+                    <h5 class="mb-1">Logout</h5>
+                    <p class="mb-1">Log out from the dashboard.</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
