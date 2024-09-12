@@ -148,8 +148,7 @@ Project Directories Strucure:
 │   ├── migrations/             
 │   ├── tests/                  
 │   ├── .env                           
-│   ├── .pylintrc     
-│   ├── requirements.txt           
+│   ├── .pylintrc             
 │   └── seed.py                 
 ├── frontend/                    
 │   ├── public/  
@@ -167,4 +166,5 @@ Project Directories Strucure:
 │   ├── frontend_app.py 
 ├── venv/
 ├── .gitignore
-└── README.md 
+├── README.md
+└── requirements.txt 
