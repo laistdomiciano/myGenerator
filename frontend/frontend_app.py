@@ -1,4 +1,4 @@
-from flask import Flask, request, session, render_template, redirect, url_for, jsonify
+from flask import Flask, request, session, render_template, redirect, url_for, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash
 import requests
@@ -77,7 +77,7 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html', user=session.get('user'))
+    return render_template('create_contract.html', user=session.get('user'))
 
 @app.route('/create_employee', methods=['GET', 'POST'])
 @login_required
@@ -105,44 +105,43 @@ def create_employee():
             'client_representative': request.form.get('client_representative')
         }
 
-        # Prepare the headers, including the token for authorization
         headers = {
             'Authorization': f"Bearer {session.get('access_token')}"
         }
 
-        # Send a POST request to the backend API to create the employee
         response = requests.post(f"{BACKEND_API_URL}/create_employee", json=form_data, headers=headers)
         result = response.json()
 
         if response.status_code == 201:
-            # If employee creation was successful, flash a success message and redirect to dashboard
+
             flash(f"Employee {form_data['employee_name']} created successfully.", 'success')
             return redirect(url_for('dashboard'))
         else:
-            # If there was an error, render the form again and display the error message
             error = result.get('error', 'An error occurred while creating the employee.')
             return render_template('create_employee.html', error=error)
 
-    # If it's a GET request, simply render the create_employee form
     return render_template('create_employee.html')
 
 
 
-@app.route('/employees_wo_contract', methods=['GET'])
+@app.route('/create_contract', methods=['GET'])
 @login_required
-def employees_wo_contract():
+def create_contract():
     headers = {
         'Authorization': f"Bearer {session.get('access_token')}"
     }
 
-    response = requests.get(f"{BACKEND_API_URL}/employees_wo_contract", headers=headers)
-    employees = response.json()
+    response_contract = requests.get(f"{BACKEND_API_URL}/create_contract", headers=headers)
+    response_employee = requests.get(f"{BACKEND_API_URL}/create_contract", headers=headers)
+    contracts = response_contract.json()
+    employees = response_employee.json()
 
-    if response.status_code == 200:
-        return render_template('employees_wo_contract.html', employees=employees)
+    if response_contract.status_code and response_employee.status_code == 200:
+        return render_template('create_contract.html', employees=employees, contracts=contracts)
     else:
-        error = employees.get('error', 'An error occurred while retrieving employees.')
-        return render_template('employees_wo_contract.html', error=error)
+        error_contracts = employees.get('error', 'An error occurred while retrieving employees.')
+        error_employees = employees.get('error', 'An error occurred while retrieving employees.')
+        return render_template('create_contract.html', error_contracts=error_contracts,error_employees=error_employees)
 
 
 @app.route('/update_user/<int:user_id>', methods=['GET', 'POST'])
@@ -152,7 +151,7 @@ def update_user(user_id):
         form_data = {
             'name': request.form.get('name'),
             'email': request.form.get('email'),
-            'password': request.form.get('password')  # Optional
+            'password': request.form.get('password')
         }
 
         headers = {
