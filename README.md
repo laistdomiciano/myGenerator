@@ -138,27 +138,32 @@ Specifies files and directories that should be ignored by Git (e.g., venv/, .env
 Project Directories Strucure:
 
 /myGenerator
+├── .github/
+│   ├── workflows/  
+│   │   ├── ci.yml
 ├── backend/
-│   ├── app/       
+│   ├── app/  
+│   │   ├── static/
+│   │   │   ├── swagger.yaml  
 │   │   ├── auth.py  
-│   │   ├── backend_app.py             
+│   │   ├── backend_app.py   
+│   │   ├── conftest.py         
 │   │   ├── models.py           
-│   │   ├── routes.py                 
+│   │   ├── routes.py  
+│   │   ├── test_routes.py                
 │   │   ├── utils.py            
-│   ├── migrations/             
-│   ├── tests/                  
-│   ├── .env                           
-│   ├── .pylintrc             
+│   ├── migrations/                        
+│   ├── .env                               
 │   └── seed.py                 
 ├── frontend/                    
 │   ├── public/  
+│   │   ├── create_contract.html    
+│   │   ├── create_employee.html      
 │   │   ├── dashboard.html    
-│   │   ├── freelance.html       
-│   │   ├── full-time.html
 │   │   ├── home.html     
 │   │   ├── login.html
-│   │   ├── part-time.html
-│   │   └── signup.html
+│   │   ├── signup.html
+│   │   └── update_user.html
 │   ├── static/
 │   │   ├── home.png          
 │   │   ├── script.js
