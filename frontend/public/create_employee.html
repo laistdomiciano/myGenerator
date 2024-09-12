@@ -1,0 +1,33 @@
+{% extends "home.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <h2 class="mb-4">Create New Employee</h2>
+        <form id="create-employee-form" action="/create_employee" method="post" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="employee_name" class="form-label">Employee Name</label>
+                <input type="text" id="employee_name" name="employee_name" class="form-control" required>
+                <div class="invalid-feedback">
+                    Please enter the employee name.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="company_name" class="form-label">Company Name</label>
+                <input type="text" id="company_name" name="company_name" class="form-control" required>
+                <div class="invalid-feedback">
+                    Please enter the company name.
+                </div>
+            </div>
+            <!-- Add all required fields similar to the above two -->
+            <button type="submit" class="btn btn-success w-100">Create Employee</button>
+        </form>
+        <p class="mt-3 text-center"><a href="/dashboard">Back to Dashboard</a></p>
+        {% if error %}
+        <div class="alert alert-danger mt-3" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,3 +1,4 @@
+venv
 USERNAME = 'lais.domiciano@hotmail.com'
 PASSWORD = '2206'
 SECRET_KEY = 'mysupersecretkey'

@@ -90,3 +90,22 @@ form input {
         font-size: 0.9rem;
     }
 }
+
+/* Employee Page */
+#employees-container {
+    margin-top: 2rem;
+}
+
+#employees-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.list-group-item {
+    font-size: 1.1rem;
+}
+
+/* Modal */
+.modal-body {
+    font-size: 1.2rem;
+}
