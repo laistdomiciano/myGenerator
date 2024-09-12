@@ -4,8 +4,8 @@ import psycopg2
 from flask import Flask
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-from routes import routes
-from models import db, User
+from .routes import routes
+from .models import db, User
 from flask_cors import CORS
 
 DB_NAME = 'mygeneratordb'
@@ -81,9 +81,6 @@ def create_app():
 
 myapp = create_app()
 
-
-# if __name__ == "__main__":
-#     myapp.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5002)))
 
 if __name__ == "__main__":
     myapp.run(host="0.0.0.0", port=5002)

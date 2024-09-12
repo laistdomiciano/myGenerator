@@ -1,5 +1,6 @@
-from conftest import client
+from .conftest import client
 import json
+
 
 def login_user(client):
     data = {"username": "other.person", "password": "1234"}
@@ -15,7 +16,8 @@ def test_login_route(client):
 
 
 def test_signup(client):
-    data = {'name': 'John Doe', 'email': 'john@example.com', 'username': 'johndoe', 'password1': 'password123', 'password2': 'password123'}
+    data = {'name': 'John Doe', 'email': 'john@example.com', 'username': 'johndoe', 'password1': 'password123',
+            'password2': 'password123'}
     response = client.post('/signup', content_type='application/json', data=json.dumps(data))
 
     assert response.status_code == 200
@@ -110,4 +112,3 @@ def test_create_contract(client):
     response = client.post(f'/create_contract/1/1', headers=headers)
 
     assert response.status_code == 201
-
