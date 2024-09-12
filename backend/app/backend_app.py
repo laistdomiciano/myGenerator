@@ -5,7 +5,7 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from .routes import routes
-from models import db, User
+from .models import db, User
 from flask_cors import CORS
 
 DB_NAME = 'mygeneratordb'
