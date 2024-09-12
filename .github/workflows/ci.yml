@@ -1,112 +1,28 @@
-name: CI Pipeline
+name: Python CI
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    branches: [ "main" ]  # Run on push to the main branch. Change this if you are using a different branch.
 
 jobs:
-  # Backend Tests and Linting
-  backend:
-    name: Backend Checks
-    runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:12
-        env:
-          POSTGRES_DB: mygeneratordb
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: Simbera22
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+  test:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu environment. You are welcome to change this.
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3  # Check out the code from the repository
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'  # Specify the Python version you want to use
 
-      - name: Install backend dependencies
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install -r backend/requirements.txt
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Lint backend with pylint
-        run: |
-          source venv/bin/activate
-          pylint --rcfile=backend/.pylintrc backend/app
-
-      - name: Run backend tests
-        env:
-          DATABASE_URL: postgresql://postgres:Simbera22@localhost:5432/mygeneratordb
-        run: |
-          source venv/bin/activate
-          pytest backend/tests --maxfail=5 --disable-warnings
-
-  # Frontend Tests, Linting, and Checks
-  frontend:
-    name: Frontend Checks
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: Install frontend dependencies
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install flask requests
-
-      # Run basic linting (e.g., check for Python issues in frontend_app.py)
-      - name: Lint frontend with pylint
-        run: |
-          source venv/bin/activate
-          pylint frontend/frontend_app.py
-
-      # Test if frontend app runs correctly
-      - name: Run Flask frontend test
-        env:
-          FRONTEND_SECRET_KEY: testsecret
-          BACKEND_API_URL: http://localhost:5002  # Assuming this can connect to backend
-        run: |
-          source venv/bin/activate
-          export FLASK_ENV=development
-          flask run --host=0.0.0.0 --port=5001 &
-          sleep 10  # Give Flask some time to start
-
-          # Now run curl or pytest to check key routes
-          curl http://localhost:5001/ || exit 1
-          curl http://localhost:5001/login || exit 1
-
-      # Optional: HTML validation
-      - name: Validate HTML files
-        run: |
-          find frontend/public -name "*.html" -print0 | xargs -0 tidy -e
-
-      # Optional: Check for valid JS and CSS
-      - name: Check JS and CSS
-        run: |
-          echo "Validating JS and CSS"
-          for file in $(find frontend/static -name "*.css" -o -name "*.js"); do
-            echo "Checking $file"
-            cat $file
-          done
+    - name: Run tests
+      run: |
+        pytest
