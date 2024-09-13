@@ -1,5 +1,6 @@
-from .backend_app import create_app
+from backend_app import create_app
 import pytest
+import pytest_flask
 
 
 @pytest.fixture

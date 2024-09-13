@@ -4,13 +4,14 @@ import psycopg2
 from flask import Flask
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-from .routes import routes
-from .models import db, User
+from routes import routes
+from models import db, User
 from flask_cors import CORS
 
 DB_NAME = 'mygeneratordb'
 migrate = Migrate()
 jwt = JWTManager()
+
 
 def create_database():
     try:
@@ -36,8 +37,10 @@ def create_database():
         print(f"Error creating the database: {e}")
         raise
 
+
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 
 def create_app():
     create_database()
@@ -78,6 +81,7 @@ def create_app():
         db.create_all()
 
     return myapp
+
 
 myapp = create_app()
 
