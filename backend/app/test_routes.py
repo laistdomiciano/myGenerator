@@ -1,4 +1,4 @@
-from conftest import client
+from .conftest import client
 import json
 
 

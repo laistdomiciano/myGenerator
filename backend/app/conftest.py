@@ -1,4 +1,4 @@
-from backend_app import create_app
+from .backend_app import create_app
 import pytest
 
 

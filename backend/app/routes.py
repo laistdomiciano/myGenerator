@@ -3,8 +3,8 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import User, Employee, ContractType, FinalContract, db
-from utils import generate_pdf, upload_to_s3
+from .models import User, Employee, ContractType, FinalContract, db
+from .utils import generate_pdf, upload_to_s3
 import os
 import uuid
 
