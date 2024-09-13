@@ -1,10 +1,10 @@
 from backend_app import create_app
 import pytest
-import pytest_flask
 
 
 @pytest.fixture
 def client():
     app = create_app()
-    with app.test_client() as client:
-        yield client
+    with app.app_context():
+        with app.test_client() as client:
+            yield client

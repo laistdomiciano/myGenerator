@@ -6,6 +6,7 @@ def login_user(client):
     data = {"username": "other.person", "password": "1234"}
     response = client.post('/login', content_type='application/json', data=json.dumps(data))
 
+    assert response.status_code == 200
     return response
 
 
@@ -78,7 +79,6 @@ def test_get_contract_type(client):
     login_data = login_user(client)
     response_dict = json.loads(login_data.text)
     token = response_dict.get('token')
-    print(token)
 
     headers = {"Authorization": f"Bearer {token}"}
 
