@@ -1,10 +1,10 @@
 /* General Styles */
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-image: url("{{ url_for('static', filename='images/home.png') }}");
+    background-image: url("/static/home.png");
     background-size: cover;
     background-position: center;
-    background-attachment: fixed; /* Ensures background doesn't scroll */
+    background-attachment: fixed;
     color: #333;
     margin: 0;
     padding: 0;
@@ -24,16 +24,16 @@ body::before {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    filter: blur(8px); /* Blurred background */
-    z-index: -1; /* Ensures the background is behind content */
-    opacity: 0.5; /* Optional: Control the transparency of the blurred image */
+    filter: blur(8px);
+    z-index: -1;
+    opacity: 0.5;
 }
 
 /* Ensure the content remains clear */
 header, main, footer {
     position: relative;
     z-index: 1;
-    background-color: rgba(255, 255, 255, 0.8); /* Slight background for legibility */
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 header h1 {
