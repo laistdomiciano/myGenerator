@@ -1,8 +1,9 @@
 from flask import Flask, request, session, render_template, redirect, url_for, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from werkzeug.security import check_password_hash
+from backend.app.models import User
 import requests
 import os
+
 
 app = Flask(__name__, template_folder='public', static_folder='static')
 
@@ -10,14 +11,14 @@ app = Flask(__name__, template_folder='public', static_folder='static')
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-app.secret_key = os.environ.get('FRONTEND_SECRET_KEY', 'your-frontend-secret-key')
+app.secret_key = os.environ.get('FRONTEND_SECRET_KEY', '1234secret')
 
 
 BACKEND_API_URL = os.environ.get('BACKEND_API_URL', 'http://localhost:5002')
 
 @login_manager.user_loader
 def load_user(user_id):
-    return None
+    return User.query.get(int(user_id))
 
 @app.route('/')
 def home():
