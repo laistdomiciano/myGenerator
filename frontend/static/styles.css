@@ -1,15 +1,16 @@
 /* General Styles */
-body {
+html, body {
+    height: 100%; /* Make sure body and html are 100% of the viewport height */
+    margin: 0;
+    padding: 0;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background-image: url("/static/home.png");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     color: #333;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Create a blur effect using an overlay */
@@ -48,6 +49,13 @@ header nav a {
 }
 
 main {
+    padding: 2rem 0;
+}
+
+
+/* Flexbox layout to push footer to the bottom */
+main {
+    flex-grow: 1; /* This allows main content to expand, pushing the footer down */
     padding: 2rem 0;
 }
 
